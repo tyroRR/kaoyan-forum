@@ -119,7 +119,7 @@
 <style scoped>
   .content{
     width: 65%;
-    margin: 30px auto;
+    margin: 90px auto;
   }
 
   .sub-header{

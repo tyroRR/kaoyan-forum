@@ -1,12 +1,9 @@
 <template>
-  <div class="layout">
-    <div id="app">
-      <v-header></v-header>
-      <router-view/>
-      <v-footer></v-footer>
-    </div>
+  <div id="app">
+    <v-header></v-header>
+    <router-view/>
+    <v-footer></v-footer>
   </div>
-
 </template>
 
 <script>
@@ -23,14 +20,14 @@
 </script>
 
 <style>
+body{
+  background-color: rgb(236, 236, 236);
+}
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-.layout{
-  background-color: rgb(236, 236, 236);
 }
 
 </style>
