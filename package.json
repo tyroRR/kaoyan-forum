@@ -17,6 +17,7 @@
     "mongoose": "^5.0.10",
     "muse-ui": "^2.1.0",
     "vue": "^2.5.2",
+    "vue-axios": "^2.0.2",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {

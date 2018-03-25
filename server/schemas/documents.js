@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
 module.exports = new mongoose.Schema({
-  username: String,
-  password: String,
-  role: String
+  fileName:String,
+  count:Number,
+  type:String,
+  createTime:String
 });
