@@ -15,7 +15,6 @@ router.post(`/user/register`,(req,res,next)=>{
   const username = req.body.username;
   const password = req.body.password;
   const repassword = req.body.repassword;
-  const role = req.body.role;
 
   if(!username){
     resData.code = 1;
@@ -49,14 +48,41 @@ router.post(`/user/register`,(req,res,next)=>{
     }
     const user = new User({
       username:username,
-      password:password
+      password:password,
+      role:"user"
     });
     user.save();
   }).then(insertInfo =>{
-    resData.message = 'registered successfully';
+    resData.message = 'register successfully';
     res.json(resData);
   });
 
+});
+
+router.post(`/user/login`,(req,res,next) =>{
+  const username = req.body.username;
+  const password = req.body.password;
+  const role = req.body.role;
+
+  User.findOne({
+    username: username,
+    password: password
+  }).then(userInfo=>{
+    if(userInfo){
+      const userInfo = {
+        username: username,
+        role: userInfo.role
+      };
+      resData.code = 0;
+      resData.message = 'login successfully';
+      resData.userInfo = userInfo;
+      return res.json(resData)
+    }else {
+      resData.code = 1;
+      resData.message = 'the user was not found';
+      res.json(resData)
+    }
+  })
 });
 
 module.exports = router;
