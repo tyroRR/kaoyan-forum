@@ -122,6 +122,12 @@
           this.login = {};
           if (this.toastTimer) clearTimeout(this.toastTimer);
           this.toastTimer = setTimeout(() => { this.toast = false }, 2000);
+        }).catch(err=>{
+          this.regMsg = '登陆失败！';
+          this.toast = true;
+          this.login = {};
+          if (this.toastTimer) clearTimeout(this.toastTimer);
+          this.toastTimer = setTimeout(() => { this.toast = false }, 2000);
         });
       },
       closeRegister(){

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
+const Topic = require('../models/Topic');
 
 let resData;
 router.use((req,res,next)=> {
@@ -62,16 +63,16 @@ router.post(`/user/register`,(req,res,next)=>{
 router.post(`/user/login`,(req,res,next) =>{
   const username = req.body.username;
   const password = req.body.password;
-  const role = req.body.role;
 
   User.findOne({
     username: username,
     password: password
   }).then(userInfo=>{
+    const role = userInfo.role;
     if(userInfo){
       const userInfo = {
         username: username,
-        role: userInfo.role
+        role: role
       };
       resData.code = 0;
       resData.message = 'login successfully';
@@ -84,5 +85,34 @@ router.post(`/user/login`,(req,res,next) =>{
     }
   })
 });
+
+router.get(`/user/topicList`,(req,res) =>{
+  Topic.find().then(doc=> {
+    resData = doc;
+    res.send(resData)
+  }).catch(err=>{
+    resData.message = 1;
+    resData.message = `failed`;
+    console.log(err);
+    res.json(resData);
+  });
+});
+
+router.post(`/user/postTopic`,(req,res) =>{
+  const topic = new Topic({
+    title : req.body.title,
+    content : req.body.content,
+    sponsor : req.body.sponsor,
+    avatar : req.body.avatar,
+    type : req.body.type,
+    createTime : req.body.createTime
+  });
+  topic.save();
+  resData.code = 1;
+  resData.message = 'success';
+  res.json(resData)
+});
+
+
 
 module.exports = router;
