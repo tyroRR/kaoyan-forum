@@ -45,7 +45,7 @@
         <div class="info-list">
           <mobile-tear-sheet>
             <mu-list>
-              <mu-sub-header>今天</mu-sub-header>
+              <mu-sub-header>{{new Date().toLocaleDateString()}}</mu-sub-header>
               <mu-list-item title="这个周末一起吃饭么?">
                 <mu-avatar src="/images/avatar1.jpg" slot="leftAvatar"/>
                 <span slot="describe">
@@ -102,14 +102,18 @@
     </div>
 </template>
 <script>
-
-
+  import api from '../../config/api-config'
   export default {
 
     data () {
       return {
-
+        topicList:[],
       }
+    },
+    mounted: function () {
+      api.reqGetTopicList().then(res=>{
+        this.topicList = res.data;
+      })
     },
     methods: {
 

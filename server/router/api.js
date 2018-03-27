@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/user');
+const User = require('../models/User');
 const Topic = require('../models/Topic');
+const Info = require('../models/Info');
 
 let resData;
 router.use((req,res,next)=> {
@@ -86,7 +87,34 @@ router.post(`/user/login`,(req,res,next) =>{
   })
 });
 
-router.get(`/user/topicList`,(req,res) =>{
+router.post(`/admin/postInfo`,(req,res) =>{
+  const createTime = new Date().toLocaleString();
+  const info = new Info({
+    title : req.body.title,
+    content : req.body.content,
+    sponsor : req.body.sponsor,
+    avatar : req.body.avatar,
+    createTime : createTime
+  });
+  info.save();
+  resData.code = 1;
+  resData.message = 'success';
+  res.json(resData)
+});
+
+router.get(`/user/getInfoList`,(req,res) =>{
+  Info.find().then(doc=> {
+    resData = doc;
+    res.send(resData)
+  }).catch(err=>{
+    resData.message = 1;
+    resData.message = `failed`;
+    console.log(err);
+    res.json(resData);
+  });
+});
+
+router.get(`/user/getTopicList`,(req,res) =>{
   Topic.find().then(doc=> {
     resData = doc;
     res.send(resData)
