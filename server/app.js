@@ -1,12 +1,32 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const multer = require('multer');
 const app = express();
 
+const  storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, '/tmp/my-uploads')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now())
+  }
+});
+
+const upload = multer({ storage: storage });
+
 app.use(express.static(__dirname + '/public'));
-app.use(express.bodyParser({uploadDir:'./uploads/avatars'}));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cookieParser());
+app.use((req,res,next)=>{
+  if(req.cookies['username']){
+    console.log(req.cookies);
+    req.userInfo = req.cookies
+  }
+  next();
+});
 
 app.all('*', function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");

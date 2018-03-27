@@ -78,6 +78,7 @@ router.post(`/user/login`,(req,res,next) =>{
       resData.code = 0;
       resData.message = 'login successfully';
       resData.userInfo = userInfo;
+      res.cookie('userInfo',userInfo,{ maxAge: 86400000});
       return res.json(resData)
     }else {
       resData.code = 1;
@@ -85,6 +86,19 @@ router.post(`/user/login`,(req,res,next) =>{
       res.json(resData)
     }
   })
+});
+
+router.post(`user/updateProfile`,(req,res) =>{
+  if(req.username){
+    const username = req.username;
+  }
+  if(req.password){
+    const password = req.password;
+  }
+  if(req.avatar){
+    const avatar = req.avatar;
+  }
+
 });
 
 router.post(`/admin/postInfo`,(req,res) =>{
