@@ -12,45 +12,44 @@
       <div class="nav-card-group">
         <div class="nav-card">
           <mu-card>
-            <mu-card-media title="Image Title" subTitle="Image Sub Title">
-              <img src="/images/sun.jpg" />
+            <mu-card-media>
+              <img src="../../assets/nav1.jpg" />
             </mu-card-media>
             <mu-card-actions>
-              <mu-flat-button label="考研信息" labelPosition="before" icon="folder"/>
+              <mu-flat-button label="资料下载" labelPosition="before" icon="folder"/>
             </mu-card-actions>
           </mu-card>
         </div>
         <div class="nav-card">
           <mu-card>
-            <mu-card-media title="Image Title" subTitle="Image Sub Title">
-              <img src="/images/sun.jpg" />
+            <mu-card-media>
+              <img src="../../assets/nav2.jpg" />
             </mu-card-media>
             <mu-card-actions>
-              <mu-flat-button label="网络课堂" labelPosition="before" icon="folder"/>
+              <mu-flat-button label="网络课堂" labelPosition="before" icon=" movie"/>
             </mu-card-actions>
           </mu-card>
         </div>
         <div class="nav-card">
           <mu-card>
-            <mu-card-media title="Image Title" subTitle="Image Sub Title">
-              <img src="/images/sun.jpg" />
+            <mu-card-media>
+              <img src="../../assets/nav3.jpg" />
             </mu-card-media>
             <mu-card-actions>
-              <mu-flat-button label="社区交流" labelPosition="before" icon="folder"/>
+              <mu-flat-button label="社区交流" labelPosition="before" icon="people"/>
             </mu-card-actions>
           </mu-card>
         </div>
       </div>
       <div class="info-pub">
         <div class="info-list">
-          <mobile-tear-sheet>
-            <mu-list>
-              <mu-sub-header>{{new Date().toLocaleDateString()}}</mu-sub-header>
-              <mu-list-item title="这个周末一起吃饭么?">
+          <mu-list>
+            <mu-sub-header>考研信息 {{new Date().toLocaleDateString()}}</mu-sub-header>
+            <div class="item-wrapper" v-for="item in infoList"  >
+              <mu-list-item :title="item.title">
                 <mu-avatar src="/images/avatar1.jpg" slot="leftAvatar"/>
                 <span slot="describe">
-        <span style="color: rgba(0, 0, 0, .87)">Myron Liu -</span> 周末要来你这里出差，要不要一起吃个饭呀，实在编不下去了,哈哈哈哈哈哈
-      </span>
+        <span style="color: rgba(0, 0, 0, .87)">{{item.sponsor + ' -'}}</span>{{' '+item.content}}</span>
                 <mu-icon-menu slot="right" icon="more_vert" tooltip="操作">
                   <mu-menu-item title="回复" />
                   <mu-menu-item title="标记" />
@@ -58,45 +57,8 @@
                 </mu-icon-menu>
               </mu-list-item>
               <mu-divider inset/>
-              <mu-list-item title="Alex Qin">
-                <mu-avatar src="/images/avatar2.jpg" slot="leftAvatar"/>
-                <span slot="describe">
-        <span style="color: rgba(0, 0, 0, .87)">看电影啊</span> <br/>
-        我们去看电影，最近有部烂片上映，又有吐槽的了
-      </span>
-                <mu-icon-menu slot="right" icon="more_vert" tooltip="操作">
-                  <mu-menu-item title="回复" />
-                  <mu-menu-item title="标记" />
-                  <mu-menu-item title="删除" />
-                </mu-icon-menu>
-              </mu-list-item>
-              <mu-divider inset/>
-              <mu-list-item title="LOL">
-                <mu-avatar src="/images/avatar3.jpg" slot="leftAvatar"/>
-                <span slot="describe">
-        <span style="color: rgba(0, 0, 0, .87)">去打游戏啊</span><br/>
-        周末一起 LOL
-      </span>
-                <mu-icon-menu slot="right" icon="more_vert" tooltip="操作">
-                  <mu-menu-item title="回复" />
-                  <mu-menu-item title="标记" />
-                  <mu-menu-item title="删除" />
-                </mu-icon-menu>
-              </mu-list-item>
-              <mu-divider inset/>
-              <mu-list-item title="Myron Liu">
-                <mu-avatar src="/images/uicon.jpg" slot="leftAvatar"/>
-                <span slot="describe">
-        <span style="color: rgba(0, 0, 0, .87)">哇去</span><br/> 实在编不下去，这就是个demo
-      </span>
-                <mu-icon-menu slot="right" icon="more_vert" tooltip="操作">
-                  <mu-menu-item title="回复" />
-                  <mu-menu-item title="标记" />
-                  <mu-menu-item title="删除" />
-                </mu-icon-menu>
-              </mu-list-item>
-            </mu-list>
-          </mobile-tear-sheet>
+            </div>
+          </mu-list>
         </div>
       </div>
     </div>
@@ -107,12 +69,12 @@
 
     data () {
       return {
-        topicList:[],
+        infoList:[],
       }
     },
     mounted: function () {
-      api.reqGetTopicList().then(res=>{
-        this.topicList = res.data;
+      api.reqGetInfoList().then(res=>{
+        this.infoList = res.data;
       })
     },
     methods: {
@@ -133,7 +95,7 @@
   .nav-card-group{
     display: flex;
     justify-content: space-between;
-    margin: 120px auto 0 auto;
+    margin: 20px auto;
   }
 
   .nav-card{
@@ -141,7 +103,7 @@
   }
 
   .info-pub{
-    margin: 35px auto;
+    margin: 0 auto;
     background-color: #fff
   }
 </style>

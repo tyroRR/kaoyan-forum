@@ -106,7 +106,7 @@ router.post(`/admin/postInfo`,(req,res) =>{
   const info = new Info({
     title : req.body.title,
     content : req.body.content,
-    sponsor : req.body.sponsor,
+    sponsor : "admin",
     avatar : req.body.avatar,
     createTime : createTime
   });
