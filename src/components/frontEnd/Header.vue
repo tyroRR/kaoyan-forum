@@ -16,7 +16,7 @@
         <mu-icon-menu icon="expand_more" slot="right">
           <mu-menu-item v-if="userInfo.role === 'admin'" title="后台管理" @click=""/>
           <mu-menu-item title="用户信息" @click="userInfoDialog = true"/>
-          <mu-menu-item title="退出" @click=""/>
+          <mu-menu-item title="退出" @click="logOut"/>
         </mu-icon-menu>
       </template>
     </mu-appbar>
@@ -43,6 +43,7 @@
 
 <script>
   import api from '../../config/api-config'
+  import {getToken,setToken,removeToken} from '../../../utils/auth';
 
   export default {
     data () {
@@ -60,6 +61,11 @@
         toast: false,
         regMsg: '',
         noAccess: true
+      }
+    },
+    mounted: function () {
+      if(sessionStorage.getItem('isLogin')){
+        this.noAccess = sessionStorage.getItem('isLogin');
       }
     },
     methods: {
@@ -80,7 +86,7 @@
           this.registerDialog = false;
           if(res.data.code === 0){
             this.regMsg = '注册成功！';
-            api.reqLogin({username:this.register.useranme,password:this.register.password});
+            api.reqLogin({username:this.register.username,password:this.register.password});
             this.noAccess = false;
           }
           else if(res.data.code === 4){
@@ -114,6 +120,8 @@
           if(res.data.code === 0){
             this.regMsg = '登录成功！';
             this.noAccess = false;
+            sessionStorage.setItem('isLogin',this.noAccess);
+            setToken();
           }
           else{
             this.regMsg = '登陆失败！';
@@ -140,6 +148,11 @@
         this.errorText = {};
         this.loginDialog = false
       },
+      logOut(){
+        this.noAccess = true;
+        sessionStorage.removeItem('isLogin');
+        removeToken();
+      }
     }
   }
 </script>

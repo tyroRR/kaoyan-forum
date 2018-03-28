@@ -117,7 +117,7 @@
           this.nav = val
         },
         postTopic () {
-
+          api.reqPostTopic().then()
         }
       }
     }

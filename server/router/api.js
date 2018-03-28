@@ -1,4 +1,5 @@
 const express = require('express');
+const crypto = require('crypto');
 const router = express.Router();
 const User = require('../models/User');
 const Topic = require('../models/Topic');
@@ -13,7 +14,17 @@ router.use((req,res,next)=> {
   next()
 });
 
-router.post(`/user/register`,(req,res,next)=>{
+router.all(`/user/*`,(req,res,next)=>{
+  if(req.cookies['accessToken']){
+    next();
+  }
+  return res.json({
+    code: 1,
+    message: 'no access'
+  })
+});
+
+router.post(`/register`,(req,res,next)=>{
   const username = req.body.username;
   const password = req.body.password;
   const repassword = req.body.repassword;
@@ -48,43 +59,52 @@ router.post(`/user/register`,(req,res,next)=>{
       res.json(resData);
       return;
     }
+    const hash = crypto.createHash('sha256');
+
+    hash.update('some data to hash');
+    console.log(hash.digest('hex'));
     const user = new User({
       username:username,
       password:password,
-      role:"user"
+      role:"user",
+      accessToken:hash
     });
     user.save();
+    console.log(user)
   }).then(insertInfo =>{
+    console.log(insertInfo);
     resData.message = 'register successfully';
+    resData.info = insertInfo;
     res.json(resData);
   });
 
 });
 
-router.post(`/user/login`,(req,res,next) =>{
+router.post(`/login`,(req,res,next) =>{
   const username = req.body.username;
   const password = req.body.password;
 
   User.findOne({
     username: username,
     password: password
-  }).then(userInfo=>{
-    const role = userInfo.role;
-    if(userInfo){
+  }).then(user=>{
+      const role = user.role;
+      const accessToken = user.accessToken;
       const userInfo = {
         username: username,
-        role: role
+        role: role,
+        accessToken: accessToken
       };
       resData.code = 0;
       resData.message = 'login successfully';
       resData.userInfo = userInfo;
-      res.cookie('userInfo',userInfo,{ maxAge: 86400000});
+      res.cookie('accessToken',accessToken,{ maxAge: 86400000});
       return res.json(resData)
-    }else {
-      resData.code = 1;
-      resData.message = 'the user was not found';
-      res.json(resData)
-    }
+    })
+    .catch(err=>{
+    resData.code = 1;
+    resData.message = 'the user was not found';
+    res.json(resData)
   })
 });
 

@@ -20,13 +20,6 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use((req,res,next)=>{
-  if(req.cookies['username']){
-    console.log(req.cookies);
-    req.userInfo = req.cookies
-  }
-  next();
-});
 
 app.all('*', function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
