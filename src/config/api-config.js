@@ -6,7 +6,7 @@ const api = {
   reqLogout: userId => axios.get(`/logout`,userId),
   reqGetInfoList: () => axios.get(`/getInfoList`),
   reqGetTopicList: type => axios.get(`/getTopicList`,type),
-  reqPostTopic: params => axios.post(`/user/postTopic`,params),
+  reqPostTopic: (userId,params) => axios.post(`/user/${userId}/postTopic`,params),
 };
 
 export default api

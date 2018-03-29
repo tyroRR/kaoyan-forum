@@ -13,16 +13,16 @@ router.use((req,res,next)=> {
   next()
 });
 
-router.post(`/user/*`,(req,res,next)=>{
-  console.log(req.cookies);
-  if(req.cookies.accessToken){
-    next();
-  }
-  return res.json({
-    code: 1,
-    message: 'no access'
-  })
-});
+// router.post(`/user/*`,(req,res,next)=>{
+//   console.log(req.cookies);
+//   if(req.cookies.accessToken){
+//     next();
+//   }
+//   return res.json({
+//     code: 1,
+//     message: 'no access'
+//   })
+// });
 
 router.post(`/register`,(req,res)=>{
   const username = req.body.username;

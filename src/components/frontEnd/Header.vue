@@ -88,7 +88,6 @@
           this.registerDialog = false;
           if(res.data.code === 0){
             this.regMsg = '注册成功！';
-            api.reqLogin({username:this.register.username,password:this.register.password});
           }
           else if(res.data.code === 4){
             this.regMsg = '该用户名已被注册！';
@@ -120,9 +119,8 @@
           this.loginDialog = false;
           if(res.data.code === 0){
             this.regMsg = '登录成功！';
-            console.log(document.cookie);
             this.access = true;
-            sessionStorage.setItem('userInfo',res.userInfo);
+            sessionStorage.setItem('userInfo',JSON.stringify(res.data.userInfo));
             sessionStorage.setItem('isLogin',this.access);
           }
           else{

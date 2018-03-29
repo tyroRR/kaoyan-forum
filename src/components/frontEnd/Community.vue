@@ -108,7 +108,6 @@
     export default {
       data () {
         return {
-          userInfo: {},
           topicList: [],
           topic: {},
           errorText: {
@@ -126,6 +125,11 @@
         }
       },
       mounted: function () {
+        api.reqGetTopicList().then(res=>{
+          this.topicList = res.data;
+        })
+      },
+      updated: function () {
         api.reqGetTopicList().then(res=>{
           this.topicList = res.data;
         })
@@ -153,7 +157,7 @@
           }
         },
         handlePostTopic () {
-          const userInfo = sessionStorage.getItem('userInfo');
+          const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
           if(userInfo){
             let params = {
               title: this.topic.title,
@@ -161,7 +165,14 @@
               sponsor: userInfo.username,
               avatar: userInfo.avatar
             };
-            api.reqPostTopic(this.userInfo.id,params).then()
+            api.reqPostTopic(userInfo.id,params).then(res =>{
+              this.postTopicDialog = false;
+              this.regMsg = '发布成功！';
+              this.topic = {};
+              this.toast = true;
+              if (this.toastTimer) clearTimeout(this.toastTimer);
+              this.toastTimer = setTimeout(() => { this.toast = false }, 2000);
+            })
           }
         },
         closePostTopic(){
