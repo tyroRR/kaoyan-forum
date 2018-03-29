@@ -6,17 +6,17 @@
       <mu-flat-button label="考研信息" slot="right" @click="$router.push({ path: '/' })"/>
       <mu-flat-button label="网络课堂" slot="right" @click="$router.push({ path: '/OnlineClass' })"/>
       <mu-flat-button label="社区交流" slot="right"  @click="$router.push({ path: '/Community' })"/>
-      <template v-if="noAccess">
+      <template v-if="access">
         <mu-icon-menu icon="expand_more" slot="right">
-          <mu-menu-item title="注册" @click="registerDialog = true"/>
-          <mu-menu-item title="登陆" @click="loginDialog = true"/>
+          <mu-menu-item v-if="userInfo.role === 'admin'" title="后台管理" @click=""/>
+          <mu-menu-item title="用户信息" @click="userInfoDialog = true"/>
+          <mu-menu-item title="退出" @click="logout"/>
         </mu-icon-menu>
       </template>
       <template v-else>
         <mu-icon-menu icon="expand_more" slot="right">
-          <mu-menu-item v-if="userInfo.role === 'admin'" title="后台管理" @click=""/>
-          <mu-menu-item title="用户信息" @click="userInfoDialog = true"/>
-          <mu-menu-item title="退出" @click="logOut"/>
+          <mu-menu-item title="注册" @click="registerDialog = true"/>
+          <mu-menu-item title="登陆" @click="loginDialog = true"/>
         </mu-icon-menu>
       </template>
     </mu-appbar>
@@ -43,7 +43,6 @@
 
 <script>
   import api from '../../config/api-config'
-  import {getToken,setToken,removeToken} from '../../../utils/auth';
 
   export default {
     data () {
@@ -60,13 +59,16 @@
         },
         toast: false,
         regMsg: '',
-        noAccess: true
+        access: false
       }
     },
-    mounted: function () {
+    beforeMount: function () {
       if(sessionStorage.getItem('isLogin')){
-        this.noAccess = sessionStorage.getItem('isLogin');
+        this.access = sessionStorage.getItem('isLogin')
       }
+    },
+    destroyed: function () {
+      sessionStorage.removeItem()
     },
     methods: {
       handleRegister() {
@@ -87,7 +89,6 @@
           if(res.data.code === 0){
             this.regMsg = '注册成功！';
             api.reqLogin({username:this.register.username,password:this.register.password});
-            this.noAccess = false;
           }
           else if(res.data.code === 4){
             this.regMsg = '该用户名已被注册！';
@@ -119,9 +120,10 @@
           this.loginDialog = false;
           if(res.data.code === 0){
             this.regMsg = '登录成功！';
-            this.noAccess = false;
-            sessionStorage.setItem('isLogin',this.noAccess);
-            setToken();
+            console.log(document.cookie);
+            this.access = true;
+            sessionStorage.setItem('userInfo',res.userInfo);
+            sessionStorage.setItem('isLogin',this.access);
           }
           else{
             this.regMsg = '登陆失败！';
@@ -148,10 +150,15 @@
         this.errorText = {};
         this.loginDialog = false
       },
-      logOut(){
-        this.noAccess = true;
-        sessionStorage.removeItem('isLogin');
-        removeToken();
+      logout(){
+        api.reqLogout().then(()=> {
+          this.regMsg = '已退出登录！';
+          this.toast = true;
+          if (this.toastTimer) clearTimeout(this.toastTimer);
+          this.toastTimer = setTimeout(() => { this.toast = false }, 2000);
+          sessionStorage.removeItem('isLogin');
+          this.access = false;
+        });
       }
     }
   }

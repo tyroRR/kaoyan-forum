@@ -1,5 +1,4 @@
 const express = require('express');
-const crypto = require('crypto');
 const router = express.Router();
 const User = require('../models/User');
 const Topic = require('../models/Topic');
@@ -14,8 +13,9 @@ router.use((req,res,next)=> {
   next()
 });
 
-router.all(`/user/*`,(req,res,next)=>{
-  if(req.cookies['accessToken']){
+router.post(`/user/*`,(req,res,next)=>{
+  console.log(req.cookies);
+  if(req.cookies.accessToken){
     next();
   }
   return res.json({
@@ -24,7 +24,7 @@ router.all(`/user/*`,(req,res,next)=>{
   })
 });
 
-router.post(`/register`,(req,res,next)=>{
+router.post(`/register`,(req,res)=>{
   const username = req.body.username;
   const password = req.body.password;
   const repassword = req.body.repassword;
@@ -59,28 +59,20 @@ router.post(`/register`,(req,res,next)=>{
       res.json(resData);
       return;
     }
-    const hash = crypto.createHash('sha256');
-
-    hash.update('some data to hash');
-    console.log(hash.digest('hex'));
     const user = new User({
       username:username,
       password:password,
+      avatar:"../uploads/avatar.jpeg",
       role:"user",
-      accessToken:hash
     });
-    user.save();
-    console.log(user)
-  }).then(insertInfo =>{
-    console.log(insertInfo);
-    resData.message = 'register successfully';
-    resData.info = insertInfo;
-    res.json(resData);
-  });
-
+    user.save().then(() =>{
+      resData.message = 'register successfully';
+      res.json(resData);
+    })
+  })
 });
 
-router.post(`/login`,(req,res,next) =>{
+router.post(`/login`,(req,res) =>{
   const username = req.body.username;
   const password = req.body.password;
 
@@ -89,16 +81,17 @@ router.post(`/login`,(req,res,next) =>{
     password: password
   }).then(user=>{
       const role = user.role;
-      const accessToken = user.accessToken;
+      const accessToken = user.id;
       const userInfo = {
+        id: user.id,
         username: username,
+        avatar: user.avatar,
         role: role,
-        accessToken: accessToken
       };
       resData.code = 0;
       resData.message = 'login successfully';
       resData.userInfo = userInfo;
-      res.cookie('accessToken',accessToken,{ maxAge: 86400000});
+      res.cookie('accessToken',accessToken,{ httpOnly: true});
       return res.json(resData)
     })
     .catch(err=>{
@@ -106,6 +99,13 @@ router.post(`/login`,(req,res,next) =>{
     resData.message = 'the user was not found';
     res.json(resData)
   })
+});
+
+router.get(`/logout`,(req,res) =>{
+  res.clearCookie('accessToken');
+  resData.code = 0;
+  resData.message = 'logout successfully';
+  res.json(resData)
 });
 
 router.post(`user/updateProfile`,(req,res) =>{
@@ -136,7 +136,7 @@ router.post(`/admin/postInfo`,(req,res) =>{
   res.json(resData)
 });
 
-router.get(`/user/getInfoList`,(req,res) =>{
+router.get(`/getInfoList`,(req,res) =>{
   Info.find().then(doc=> {
     resData = doc;
     res.send(resData)
@@ -148,7 +148,7 @@ router.get(`/user/getInfoList`,(req,res) =>{
   });
 });
 
-router.get(`/user/getTopicList`,(req,res) =>{
+router.get(`/getTopicList`,(req,res) =>{
   Topic.find().then(doc=> {
     resData = doc;
     res.send(resData)
@@ -160,14 +160,15 @@ router.get(`/user/getTopicList`,(req,res) =>{
   });
 });
 
-router.post(`/user/postTopic`,(req,res) =>{
+router.post(`/user/:id/postTopic`,(req,res) =>{
+  const createTime = new Date().toLocaleString();
   const topic = new Topic({
     title : req.body.title,
     content : req.body.content,
     sponsor : req.body.sponsor,
     avatar : req.body.avatar,
-    type : req.body.type,
-    createTime : req.body.createTime
+    type : 'recent',
+    createTime : createTime
   });
   topic.save();
   resData.code = 1;

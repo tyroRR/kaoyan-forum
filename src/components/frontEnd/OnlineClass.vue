@@ -34,7 +34,6 @@
           image: '/images/breakfast.jpg',
           title: 'Breakfast',
           author: 'Myron',
-          featured: true
         }, {
           image: '/images/burger.jpg',
           title: 'Burger',

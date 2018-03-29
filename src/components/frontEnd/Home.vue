@@ -2,10 +2,10 @@
     <div class="content">
       <div class="sub-header">
         <mu-card>
-          <mu-card-title title="Content Title"/>
+          <mu-card-title title="KY-forum"/>
           <mu-card-text>
-            散落在指尖的阳光，我试着轻轻抓住光影的踪迹，它却在眉宇间投下一片淡淡的阴影。
-            调皮的阳光掀动了四月的心帘，温暖如约的歌声渐起。
+            在一个人奋斗的道路上，你也许会孤单寂寞，可是别忘了，朋友的祝福还在，父母的叮咛还在，对希望的追求还在，至少你的信仰还在。
+            那么再苦再累算什么，你将永远不会孤独，你将永远的走下去。
           </mu-card-text>
         </mu-card>
       </div>
@@ -47,7 +47,7 @@
             <mu-sub-header>考研信息 {{new Date().toLocaleDateString()}}</mu-sub-header>
             <div class="item-wrapper" v-for="item in infoList"  >
               <mu-list-item :title="item.title">
-                <mu-avatar src="/images/avatar1.jpg" slot="leftAvatar"/>
+                <mu-avatar src="" slot="leftAvatar"/>
                 <span slot="describe">
         <span style="color: rgba(0, 0, 0, .87)">{{item.sponsor + ' -'}}</span>{{' '+item.content}}</span>
                 <mu-icon-menu slot="right" icon="more_vert" tooltip="操作">

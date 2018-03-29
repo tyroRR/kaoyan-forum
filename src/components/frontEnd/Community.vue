@@ -1,5 +1,6 @@
 <template>
     <div>
+      <mu-toast v-if="toast" :message="regMsg" @close="hideToast"/>
       <mu-row class="sub-nav">
         <mu-col width="100" tablet="100" desktop="100">
           <mu-paper>
@@ -91,6 +92,14 @@
           </div>
         </mu-col>
       </mu-row>
+      <div class="post-topic">
+        <mu-dialog :open="postTopicDialog" title="发布新话题" @close="closePostTopic">
+          <mu-text-field label="标题" v-model="topic.title" :errorText="errorText.title" labelFloat/><br/>
+          <mu-text-field hintText="请输入..." v-model="topic.content" multiLine :errorText="errorText.content" :rows="10" :rowsMax="30" fullWidth/><br/>
+          <mu-flat-button slot="actions" @click="closePostTopic" primary label="取消"/>
+          <mu-flat-button slot="actions" primary @click="handlePostTopic" label="确定"/>
+        </mu-dialog>
+      </div>
     </div>
 </template>
 
@@ -99,12 +108,21 @@
     export default {
       data () {
         return {
+          userInfo: {},
+          topicList: [],
+          topic: {},
+          errorText: {
+            title: '',
+            content: ''
+          },
+          postTopicDialog: false,
+          nav: '默认',
+          toast: false,
+          regMsg: '',
           total: 130,
           current: 1,
           showSizeChanger: true,
-          pageSizeOption: [10, 20, 30, 40],
-          topicList: [],
-          nav: '默认'
+          pageSizeOption: [10, 20, 30, 40]
         }
       },
       mounted: function () {
@@ -113,12 +131,44 @@
         })
       },
       methods: {
+        hideToast () {
+          this.toast = false;
+          if (this.toastTimer) clearTimeout(this.toastTimer)
+        },
         handleChange (val) {
           this.nav = val
         },
+        handleClick (){
+
+        },
         postTopic () {
-          api.reqPostTopic().then()
-        }
+          if(sessionStorage.getItem('isLogin')){
+            this.postTopicDialog = true
+          }
+          else{
+            this.regMsg = '登录后才能发布消息！';
+            this.toast = true;
+            if (this.toastTimer) clearTimeout(this.toastTimer);
+            this.toastTimer = setTimeout(() => { this.toast = false }, 2000);
+          }
+        },
+        handlePostTopic () {
+          const userInfo = sessionStorage.getItem('userInfo');
+          if(userInfo){
+            let params = {
+              title: this.topic.title,
+              content: this.topic.content,
+              sponsor: userInfo.username,
+              avatar: userInfo.avatar
+            };
+            api.reqPostTopic(this.userInfo.id,params).then()
+          }
+        },
+        closePostTopic(){
+          this.topic = {};
+          this.errorText = {};
+          this.postTopicDialog = false
+        },
       }
     }
 </script>
