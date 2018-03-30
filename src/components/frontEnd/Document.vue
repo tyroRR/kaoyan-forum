@@ -36,52 +36,14 @@
         </mu-card>
       </mu-col>
       <mu-col width="0" tablet="25" desktop="25" class="sidebar">
-        <div class="post-topic bm">
-          <mu-card>
-            <mu-card-actions>
-              <mu-flat-button label="发布新话题" class="post-topic" color="#FFF" backgroundColor="#a4c639" @click="postTopic"/>
-            </mu-card-actions>
-          </mu-card>
-        </div>
         <div class="tips bm">
           <mu-paper>
-            <mu-card-header title="小帖士"/>
+            <mu-card-header title="热门下载Top10"/>
             <mu-divider />
-            <mu-list-item title="Follow up">
-              <mu-icon slot="right" value="info"/>
-            </mu-list-item>
-            <mu-list-item title="Follow up">
-              <mu-icon slot="right" value="info"/>
-            </mu-list-item>
-            <mu-list-item title="Follow up">
-              <mu-icon slot="right" value="info"/>
+            <mu-list-item v-for="item in top_10_files" :key="index" :title="item.fileName">
+              <mu-badge :content="item.count" circle secondary slot="after"/>
             </mu-list-item>
           </mu-paper>
-        </div>
-        <div class="rules bm">
-          <mu-card>
-            <mu-card-header title="社区规则"/>
-            <mu-divider />
-            <mu-list-item title="Follow up">
-              <mu-icon slot="right" value="info"/>
-            </mu-list-item>
-            <mu-list-item title="Follow up">
-              <mu-icon slot="right" value="info"/>
-            </mu-list-item>
-          </mu-card>
-        </div>
-        <div class="statistics bm">
-          <mu-card>
-            <mu-card-header title="Myron Avatar" subTitle="sub title">
-            </mu-card-header>
-            <mu-divider />
-            <mu-list-item title="Follow up">
-              <mu-icon slot="right" value="info"/>
-            </mu-list-item>
-            <mu-list-item title="Follow up">
-              <mu-icon slot="right" value="info"/>
-            </mu-list-item>
-          </mu-card>
         </div>
       </mu-col>
     </mu-row>
@@ -96,13 +58,13 @@
     data () {
       return {
         fileList: [],
+        top_10_files: [],
         fileId: '',
         value: null,
         errorText: {
           title: '',
           content: ''
         },
-        postTopicDialog: false,
         nav: '全部',
         toast: false,
         regMsg: '',
@@ -115,6 +77,7 @@
     mounted: function () {
       api.reqGetFileList().then(res=>{
         this.fileList = res.data;
+        this.top_10_files = res.data.slice(0,9);
       })
     },
     methods: {
@@ -136,7 +99,11 @@
         const fid = val.$attrs.fileId;
         if(sessionStorage.getItem('isLogin')){
           const uid = JSON.parse(sessionStorage.getItem('userInfo')).id;
-          api.reqDownload(uid,fid)
+          api.reqDownload(uid,fid);
+          api.reqGetFileList().then(res=>{
+            this.fileList = res.data;
+            this.top_10_files = res.data.slice(0,9);
+          })
         }
         else{
           this.regMsg = '登录后才能下载资料！';
@@ -144,47 +111,6 @@
           if (this.toastTimer) clearTimeout(this.toastTimer);
           this.toastTimer = setTimeout(() => { this.toast = false }, 2000);
         }
-      },
-      postTopic () {
-        if(sessionStorage.getItem('isLogin')){
-          this.postTopicDialog = true
-        }
-        else{
-          this.regMsg = '登录后才能发布消息！';
-          this.toast = true;
-          if (this.toastTimer) clearTimeout(this.toastTimer);
-          this.toastTimer = setTimeout(() => { this.toast = false }, 2000);
-        }
-      },
-      handlePostTopic () {
-        const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
-        if(userInfo){
-          let params = {
-            title: this.topic.title,
-            content: this.topic.content,
-            sponsor: userInfo.username,
-            avatar: userInfo.avatar
-          };
-          api.reqPostTopic(userInfo.id,params).then(res =>{
-            this.postTopicDialog = false;
-            this.regMsg = '发布成功！';
-            this.topic = {};
-            api.reqGetTopicList().then(res=>{
-              this.topicList = res.data;
-            });
-            this.toast = true;
-            if (this.toastTimer) clearTimeout(this.toastTimer);
-            this.toastTimer = setTimeout(() => { this.toast = false }, 2000);
-          })
-        }
-      },
-      closePostTopic(){
-        this.topic = {};
-        this.errorText = {};
-        this.postTopicDialog = false
-      },
-      showDetail(item){
-        this.$router.push({ path: `Topic/${item.id}` });
       }
     }
   }

@@ -178,7 +178,7 @@
           this.postTopicDialog = false
         },
         showDetail(item){
-          this.$router.push({ path: `Topic/${item.id}` });
+          this.$router.push({ path: `Content/${item.id}` });
         }
       }
     }

@@ -5,5 +5,5 @@ module.exports = new mongoose.Schema({
   url:String,
   count:Number,
   type:String,
-  createTime:Date
+  createTime:String
 });

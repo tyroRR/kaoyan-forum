@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const Topic = require('../models/Topic');
+const Lesson = require('../models/Lesson');
 const Info = require('../models/Info');
 const Document = require('../models/Document');
 
@@ -119,7 +120,18 @@ router.post(`user/updateProfile`,(req,res) =>{
   if(req.avatar){
     const avatar = req.avatar;
   }
+});
 
+router.get(`/getLessonList`,(req,res) =>{
+  Lesson.find().then(doc=> {
+    resData = doc;
+    res.send(resData)
+  }).catch(err=>{
+    resData.message = 1;
+    resData.message = `failed`;
+    console.log(err);
+    res.json(resData);
+  });
 });
 
 router.post(`/admin/postInfo`,(req,res) =>{
@@ -192,13 +204,15 @@ router.get(`/getFileList`,(req,res) =>{
 router.get(`/user/:uid/file/:fid`,(req,res) =>{
   const id = req.params.fid;
   Document.findOne({
-    fid: id
+    _id: id
   }).then(file=>{
     console.log(file);
     const url = file.url;
-    res.download(url);
-    resData.message = 0;
-    resData.message = `success`;
+    file.count++;
+    file.save();
+    res.download(url)
+  }).catch(err=>{
+    console.log(err)
   })
 });
 

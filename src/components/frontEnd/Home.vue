@@ -47,14 +47,8 @@
             <mu-sub-header>考研信息 {{new Date().toLocaleDateString()}}</mu-sub-header>
             <div class="item-wrapper" v-for="item in infoList"  >
               <mu-list-item :title="item.title">
-                <mu-avatar src="" slot="leftAvatar"/>
                 <span slot="describe">
         <span style="color: rgba(0, 0, 0, .87)">{{item.sponsor + ' -'}}</span>{{' '+item.content}}</span>
-                <mu-icon-menu slot="right" icon="more_vert" tooltip="操作">
-                  <mu-menu-item title="回复" />
-                  <mu-menu-item title="标记" />
-                  <mu-menu-item title="删除" />
-                </mu-icon-menu>
               </mu-list-item>
               <mu-divider inset/>
             </div>

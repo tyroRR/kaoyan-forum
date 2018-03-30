@@ -32,8 +32,8 @@ export default new Router({
       component: Community
     },
     {
-      path: '/Topic/:id',
-      name: 'Topic',
+      path: '/Content/:id',
+      name: 'Content',
       component: Content
     }
   ]
