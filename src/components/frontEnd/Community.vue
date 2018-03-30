@@ -22,15 +22,14 @@
               <div class="info-list">
                 <mu-list>
                   <mu-sub-header>考研信息 {{new Date().toLocaleDateString()}}</mu-sub-header>
-                  <div class="item-wrapper" v-for="item in topicList" >
+                  <div class="item-wrapper" v-for="item in topicList">
                     <mu-list-item :title="item.title">
-                      <mu-avatar src="/images/avatar1.jpg" slot="leftAvatar"/>
+                      <mu-avatar src="" slot="leftAvatar"/>
                       <span slot="describe">
         <span style="color: rgba(0, 0, 0, .87)">{{item.sponsor + ' -'}}</span>{{' '+item.content}}</span>
                       <mu-icon-menu slot="right" icon="more_vert" tooltip="操作">
-                        <mu-menu-item title="回复" />
-                        <mu-menu-item title="标记" />
-                        <mu-menu-item title="删除" />
+                        <mu-menu-item title="查看详情" @click="showDetail(item)"/>
+                        <mu-menu-item title="点赞"/>
                       </mu-icon-menu>
                     </mu-list-item>
                     <mu-divider inset/>
@@ -54,13 +53,13 @@
             <mu-paper>
               <mu-card-header title="小帖士"/>
               <mu-divider />
-              <mu-list-item title="Follow up">
+              <mu-list-item title="Tip 1">
                 <mu-icon slot="right" value="info"/>
               </mu-list-item>
-              <mu-list-item title="Follow up">
+              <mu-list-item title="Tip 2">
                 <mu-icon slot="right" value="info"/>
               </mu-list-item>
-              <mu-list-item title="Follow up">
+              <mu-list-item title="Tip 3">
                 <mu-icon slot="right" value="info"/>
               </mu-list-item>
             </mu-paper>
@@ -69,23 +68,23 @@
             <mu-card>
               <mu-card-header title="社区规则"/>
               <mu-divider />
-              <mu-list-item title="Follow up">
+              <mu-list-item title="Rule 1">
                 <mu-icon slot="right" value="info"/>
               </mu-list-item>
-              <mu-list-item title="Follow up">
+              <mu-list-item title="Rule 2">
                 <mu-icon slot="right" value="info"/>
               </mu-list-item>
             </mu-card>
           </div>
           <div class="statistics bm">
             <mu-card>
-              <mu-card-header title="Myron Avatar" subTitle="sub title">
+              <mu-card-header title="Statistics" subTitle="sub title">
               </mu-card-header>
               <mu-divider />
-              <mu-list-item title="Follow up">
+              <mu-list-item title="Statistics 1">
                 <mu-icon slot="right" value="info"/>
               </mu-list-item>
-              <mu-list-item title="Follow up">
+              <mu-list-item title="Statistics 2">
                 <mu-icon slot="right" value="info"/>
               </mu-list-item>
             </mu-card>
@@ -129,11 +128,6 @@
           this.topicList = res.data;
         })
       },
-      updated: function () {
-        api.reqGetTopicList().then(res=>{
-          this.topicList = res.data;
-        })
-      },
       methods: {
         hideToast () {
           this.toast = false;
@@ -169,6 +163,9 @@
               this.postTopicDialog = false;
               this.regMsg = '发布成功！';
               this.topic = {};
+              api.reqGetTopicList().then(res=>{
+                this.topicList = res.data;
+              });
               this.toast = true;
               if (this.toastTimer) clearTimeout(this.toastTimer);
               this.toastTimer = setTimeout(() => { this.toast = false }, 2000);
@@ -180,11 +177,14 @@
           this.errorText = {};
           this.postTopicDialog = false
         },
+        showDetail(item){
+          this.$router.push({ path: `Topic/${item.id}` });
+        }
       }
     }
 </script>
 
-<style>
+<style scoped>
 .sub-nav{
   margin: 65px 0;
 }

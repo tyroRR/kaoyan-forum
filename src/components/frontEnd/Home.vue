@@ -16,7 +16,7 @@
               <img src="../../assets/nav1.jpg" />
             </mu-card-media>
             <mu-card-actions>
-              <mu-flat-button label="资料下载" labelPosition="before" icon="folder"/>
+              <mu-flat-button label="资料下载" labelPosition="before" icon="folder" @click="$router.push({ path: '/Document' })"/>
             </mu-card-actions>
           </mu-card>
         </div>
@@ -26,7 +26,7 @@
               <img src="../../assets/nav2.jpg" />
             </mu-card-media>
             <mu-card-actions>
-              <mu-flat-button label="网络课堂" labelPosition="before" icon=" movie"/>
+              <mu-flat-button label="网络课堂" labelPosition="before" icon=" movie" @click="$router.push({ path: '/OnlineClass' })"/>
             </mu-card-actions>
           </mu-card>
         </div>
@@ -36,7 +36,7 @@
               <img src="../../assets/nav3.jpg" />
             </mu-card-media>
             <mu-card-actions>
-              <mu-flat-button label="社区交流" labelPosition="before" icon="people"/>
+              <mu-flat-button label="社区交流" labelPosition="before" icon="people" @click="$router.push({ path: '/Community' })"/>
             </mu-card-actions>
           </mu-card>
         </div>

@@ -1,6 +1,6 @@
 <template>
   <div class="footer">
-    Muse-UI ©2017 Created by Muse-UI
+    KY-forum ©2018 Created by LW
   </div>
 </template>
 

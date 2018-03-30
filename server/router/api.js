@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require('../models/User');
 const Topic = require('../models/Topic');
 const Info = require('../models/Info');
+const Document = require('../models/Document');
 
 let resData;
 router.use((req,res,next)=> {
@@ -13,7 +14,7 @@ router.use((req,res,next)=> {
   next()
 });
 
-// router.post(`/user/*`,(req,res,next)=>{
+// router.all(`/user/*`,(req,res,next)=>{
 //   console.log(req.cookies);
 //   if(req.cookies.accessToken){
 //     next();
@@ -160,7 +161,7 @@ router.get(`/getTopicList`,(req,res) =>{
   });
 });
 
-router.post(`/user/:id/postTopic`,(req,res) =>{
+router.post(`/user/:uid/postTopic`,(req,res) =>{
   const createTime = new Date().toLocaleString();
   const topic = new Topic({
     title : req.body.title,
@@ -176,6 +177,30 @@ router.post(`/user/:id/postTopic`,(req,res) =>{
   res.json(resData)
 });
 
+router.get(`/getFileList`,(req,res) =>{
+  Document.find().then(doc=> {
+    resData = doc;
+    res.send(resData)
+  }).catch(err=>{
+    resData.message = 1;
+    resData.message = `failed`;
+    console.log(err);
+    res.json(resData);
+  });
+});
+
+router.get(`/user/:uid/file/:fid`,(req,res) =>{
+  const id = req.params.fid;
+  Document.findOne({
+    fid: id
+  }).then(file=>{
+    console.log(file);
+    const url = file.url;
+    res.download(url);
+    resData.message = 0;
+    resData.message = `success`;
+  })
+});
 
 
 module.exports = router;

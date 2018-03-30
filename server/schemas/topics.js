@@ -6,5 +6,12 @@ module.exports = new mongoose.Schema({
   sponsor:String,
   avatar:String,
   type:String,
-  createTime:String
+  createTime:Date,
+  reply:[
+    {
+      username:String,
+      content:String,
+      createTime:Date,
+    }
+  ]
 });

@@ -3,7 +3,7 @@
     <mu-toast v-if="toast" :message="regMsg" @close="hideToast"/>
     <mu-appbar title="考研网站" class="wrapper">
       <mu-flat-button label="首页" slot="right" @click="$router.push({ path: '/' })"/>
-      <mu-flat-button label="考研信息" slot="right" @click="$router.push({ path: '/' })"/>
+      <mu-flat-button label="资料下载" slot="right" @click="$router.push({ path: '/Document' })"/>
       <mu-flat-button label="网络课堂" slot="right" @click="$router.push({ path: '/OnlineClass' })"/>
       <mu-flat-button label="社区交流" slot="right"  @click="$router.push({ path: '/Community' })"/>
       <template v-if="access">
