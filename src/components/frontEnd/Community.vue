@@ -5,11 +5,10 @@
         <mu-col width="100" tablet="100" desktop="100">
           <mu-paper>
             <mu-bottom-nav :value="nav" @change="handleChange">
-              <mu-bottom-nav-item value="默认" title="默认" icon="assignment"/>
-              <mu-bottom-nav-item value="优质帖子" title="优质帖子" icon="star_border"/>
-              <mu-bottom-nav-item value="最近发布" title="最近发布" icon="restore"/>
-              <mu-bottom-nav-item value="最新回复" title="最新回复" icon="autorenew"/>
-              <mu-bottom-nav-item value="无人问津" title="无人问津" icon="location_off"/>
+              <mu-bottom-nav-item value="考研资讯区" title="考研资讯区" icon="assignment"/>
+              <mu-bottom-nav-item value="学习讨论区" title="学习讨论区" icon="star_border"/>
+              <mu-bottom-nav-item value="经验互动区" title="经验互动区" icon="restore"/>
+              <mu-bottom-nav-item value="名校交流区" title="名校交流区" icon="autorenew"/>
             </mu-bottom-nav>
           </mu-paper>
         </mu-col>
@@ -114,7 +113,7 @@
             content: ''
           },
           postTopicDialog: false,
-          nav: '默认',
+          nav: '考研资讯区',
           toast: false,
           regMsg: '',
           total: 130,
@@ -125,10 +124,27 @@
       },
       mounted: function () {
         api.reqGetTopicList().then(res=>{
-          this.topicList = res.data;
+          let type = this.topicType();
+          this.topicList = res.data.filter(v=>v.type === type);
         })
       },
       methods: {
+        topicType () {
+          let topicType = '';
+          if(this.nav === '考研资讯区'){
+            topicType = 'info'
+          }
+          if(this.nav === '学习讨论区'){
+            topicType = 'dis'
+          }
+          if(this.nav === '经验互动区'){
+            topicType = 'exp'
+          }
+          if(this.nav === '名校交流区'){
+            topicType = 'elite'
+          }
+          return topicType;
+        },
         hideToast () {
           this.toast = false;
           if (this.toastTimer) clearTimeout(this.toastTimer)
@@ -159,12 +175,13 @@
               sponsor: userInfo.username,
               avatar: userInfo.avatar
             };
-            api.reqPostTopic(userInfo.id,params).then(res =>{
+            api.reqPostTopic(userInfo.id,params).then(() =>{
               this.postTopicDialog = false;
               this.regMsg = '发布成功！';
               this.topic = {};
               api.reqGetTopicList().then(res=>{
-                this.topicList = res.data;
+                let type = this.topicType;
+                this.topicList = res.data.filter(v=>v.role === type);
               });
               this.toast = true;
               if (this.toastTimer) clearTimeout(this.toastTimer);
@@ -178,7 +195,8 @@
           this.postTopicDialog = false
         },
         showDetail(item){
-          this.$router.push({ path: `Content/${item.id}` });
+          sessionStorage.setItem('content',JSON.stringify(item));
+          this.$router.push({ path: `Content/${item._id}` });
         }
       }
     }

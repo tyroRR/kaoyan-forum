@@ -3,20 +3,26 @@
     <mu-toast v-if="toast" :message="regMsg" @close="hideToast"/>
     <mu-row gutter class="content">
       <mu-col width="100" tablet="75" desktop="75" class="topic-part">
-        <mu-paper>
-          <div class="file-list">
-            <mu-list :value="value" @change="handleSelect" @itemClick="handleDownload">
-              <mu-sub-header>话题详情</mu-sub-header>
-
-            </mu-list>
-          </div>
-          <mu-pagination :total="total" :showSizeChanger="showSizeChanger" :pageSizeOption="pageSizeOption" @pageSizeChange="handleClick">
-          </mu-pagination>
+        <mu-paper class="paper">
+          <mu-row gutter>
+            <mu-col width="90" tablet="90" desktop="90" >
+              <h2>{{content.title}}</h2>
+              <span style="color: #00bcd4">{{content.sponsor}}  </span><span style="color: #7f8c8d">{{content.createTime}} . {{content.count}} 次阅读</span>
+            </mu-col>
+            <mu-col width="10" tablet="10" desktop="10">
+              <mu-avatar src="/images/avatar1.jpg"/>
+            </mu-col>
+          </mu-row>
+          <hr>
+          <mu-row>
+            <p>{{content.content}}</p>
+          </mu-row>
         </mu-paper>
       </mu-col>
       <mu-col width="0" tablet="25" desktop="25" class="sidebar">
         <div class="tips bm">
           <mu-paper>
+
             <mu-card-header title="点赞次数"/>
             <mu-divider />
 
@@ -34,6 +40,7 @@
   export default {
     data () {
       return {
+        content: {},
         fileList: [],
         top_10_files: [],
         fileId: '',
@@ -51,10 +58,7 @@
       }
     },
     mounted: function () {
-      api.reqGetFileList().then(res=>{
-        this.fileList = res.data;
-        this.top_10_files = res.data.slice(0,9);
-      })
+      this.content = JSON.parse(sessionStorage.getItem('content'));
     },
     methods: {
       hideToast () {
@@ -101,6 +105,10 @@
   .content{
     width: 65%;
     margin: 80px auto;
+  }
+
+  .paper{
+    padding: 5%;
   }
 
   .bm {

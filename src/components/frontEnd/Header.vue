@@ -64,7 +64,8 @@
     },
     beforeMount: function () {
       if(sessionStorage.getItem('isLogin')){
-        this.access = sessionStorage.getItem('isLogin')
+        this.access = sessionStorage.getItem('isLogin');
+        this.userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
       }
     },
     destroyed: function () {
@@ -118,9 +119,15 @@
         api.reqLogin(this.login).then(res=>{
           this.loginDialog = false;
           if(res.data.code === 0){
-            this.regMsg = '登录成功！';
+            this.userInfo = res.data.userInfo;
+            if(this.userInfo.role === 'admin'){
+              this.regMsg = '欢迎管理员！';
+            }
+            else {
+              this.regMsg = '登录成功！';
+            }
             this.access = true;
-            sessionStorage.setItem('userInfo',JSON.stringify(res.data.userInfo));
+            sessionStorage.setItem('userInfo',JSON.stringify(this.userInfo));
             sessionStorage.setItem('isLogin',this.access);
           }
           else{
@@ -154,6 +161,7 @@
           this.toast = true;
           if (this.toastTimer) clearTimeout(this.toastTimer);
           this.toastTimer = setTimeout(() => { this.toast = false }, 2000);
+          this.userInfo ={};
           sessionStorage.removeItem('isLogin');
           this.access = false;
         });

@@ -5,7 +5,7 @@ import Document from '@/components/frontEnd/Document'
 import OnlineClass from '@/components/frontEnd/OnlineClass'
 import Community from '@/components/frontEnd/Community'
 import Content from '@/components/frontEnd/Content'
-//import HelloWorld from '@/components/HelloWorld'
+//import Dashboard from '@/components/backEnd/Dashboard'
 
 Vue.use(Router);
 
@@ -16,6 +16,11 @@ export default new Router({
       name: 'Home',
       component: Home
     },
+    // {
+    //   path: '/Dashboard',
+    //   name: 'Dashboard',
+    //   component: Dashboard
+    // },
     {
       path: '/Document',
       name: 'Document',

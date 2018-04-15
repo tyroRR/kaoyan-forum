@@ -1,13 +1,11 @@
 <template>
     <div class="content">
-      <div class="sub-header">
-        <mu-card>
-          <mu-card-title title="KY-forum"/>
-          <mu-card-text>
-            在一个人奋斗的道路上，你也许会孤单寂寞，可是别忘了，朋友的祝福还在，父母的叮咛还在，对希望的追求还在，至少你的信仰还在。
-            那么再苦再累算什么，你将永远不会孤独，你将永远的走下去。
-          </mu-card-text>
-        </mu-card>
+      <div class="carousel">
+        <el-carousel :interval="4000" type="card" height="200px">
+          <el-carousel-item v-for="item in 6" :key="item">
+            <h3>{{ item }}</h3>
+          </el-carousel-item>
+        </el-carousel>
       </div>
       <div class="nav-card-group">
         <div class="nav-card">
@@ -46,7 +44,7 @@
           <mu-list>
             <mu-sub-header>考研信息 {{new Date().toLocaleDateString()}}</mu-sub-header>
             <div class="item-wrapper" v-for="item in infoList"  >
-              <mu-list-item :title="item.title">
+              <mu-list-item :title="item.title" @click="showDetail(item)">
                 <span slot="describe">
         <span style="color: rgba(0, 0, 0, .87)">{{item.sponsor + ' -'}}</span>{{' '+item.content}}</span>
               </mu-list-item>
@@ -72,7 +70,10 @@
       })
     },
     methods: {
-
+      showDetail(item){
+        sessionStorage.setItem('content',JSON.stringify(item));
+        this.$router.push({ path: `Content/${item._id}` });
+      }
     }
   }
 </script>
@@ -82,8 +83,20 @@
     margin: 90px auto;
   }
 
-  .sub-header{
-    text-align: center;
+  .el-carousel__item h3 {
+    color: #475669;
+    font-size: 14px;
+    opacity: 0.75;
+    line-height: 200px;
+    margin: 0;
+  }
+
+  .el-carousel__item:nth-child(2n) {
+    background-color: #99a9bf;
+  }
+
+  .el-carousel__item:nth-child(2n+1) {
+    background-color: #d3dce6;
   }
 
   .nav-card-group{
