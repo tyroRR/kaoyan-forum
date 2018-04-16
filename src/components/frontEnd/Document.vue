@@ -5,7 +5,7 @@
       <mu-col width="100" tablet="100" desktop="100">
         <mu-paper>
           <mu-bottom-nav :value="nav" @change="handleChange">
-            <mu-bottom-nav-item value="全部" title="全部" icon="description"/>
+            <mu-bottom-nav-item value="历史真题" title="历史真题" icon="description"/>
             <mu-bottom-nav-item value="数学" title="数学" icon="description"/>
             <mu-bottom-nav-item value="英语" title="英语" icon="description"/>
             <mu-bottom-nav-item value="政治" title="政治" icon="description"/>
@@ -22,16 +22,63 @@
             <div class="file-list">
               <mu-list :value="value" @change="handleSelect" @itemClick="handleDownload">
                 <mu-sub-header>资料下载</mu-sub-header>
-                <mu-list-item v-for="(item,index) in fileList" :key="index" :title="item.fileName" :fileId="item._id" :value="index" >
-                  <mu-avatar icon="assignment" backgroundColor="blue" slot="leftAvatar" />
-                  <mu-icon value="file_download" slot="right"/>
-                  <span slot="describe">
+                  <template v-if="this.nav === '历史真题'">
+                    <el-table
+                      :data="files"
+                      border
+                      style="width: 100%">
+                      <el-table-column
+                        fixed
+                        prop="type"
+                        label="分类/日期"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        prop="y2018"
+                        label="2018"
+                        align="center">
+                        <template slot-scope="scope">
+                          <el-button @click="downZT(scope.index,scope.row)" type="text" size="small">{{scope.row.y2018}}</el-button>
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        prop="y2017"
+                        label="2017"
+                        align="center">
+                        <template slot-scope="scope">
+                          <el-button @click="downZT(scope.index,scope.row)" type="text" size="small">{{scope.row.y2017}}</el-button>
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        prop="y2016"
+                        label="2016"
+                        align="center">
+                        <template slot-scope="scope">
+                          <el-button @click="downZT(scope.$index,scope.row)" type="text" size="small">{{scope.row.y2016}}</el-button>
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        prop="y2015"
+                        label="2015"
+                        align="center">
+                        <template slot-scope="scope">
+                          <el-button @click="downZT(scope.$index,scope.row)" type="text" size="small">{{scope.row.y2015}}</el-button>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </template>
+                <template v-else>
+                  <mu-list-item v-for="(item,index) in fileList" :key="index" :title="item.fileName" :fileId="item._id" :value="index" >
+                    <mu-avatar icon="assignment" backgroundColor="blue" slot="leftAvatar" />
+                    <mu-icon value="file_download" slot="right"/>
+                    <span slot="describe">
         <span style="color: rgba(0, 0, 0, .87)">{{item.createTime + ' -'}}</span>下载次数{{' '+item.count}}</span>
-                </mu-list-item>
+                  </mu-list-item>
+                  <mu-pagination :total="total" :showSizeChanger="showSizeChanger" :pageSizeOption="pageSizeOption" @pageSizeChange="handleClick">
+                  </mu-pagination>
+                </template>
               </mu-list>
             </div>
-            <mu-pagination :total="total" :showSizeChanger="showSizeChanger" :pageSizeOption="pageSizeOption" @pageSizeChange="handleClick">
-            </mu-pagination>
           </mu-card-text>
         </mu-card>
       </mu-col>
@@ -57,6 +104,49 @@
   export default {
     data () {
       return {
+        files:[{
+          type: '政治',
+          y2018: '2018',
+          y2017: '2017',
+          y2016: '2016',
+          y2015: '2015'
+        },{
+          type: '英语一',
+          y2018: '2018',
+          y2017: '2017',
+          y2016: '2016',
+          y2015: '2015'
+        },{
+          type: '英语二',
+          y2018: '2018',
+          y2017: '2017',
+          y2016: '2016',
+          y2015: '2015'
+        },{
+          type: '数学一',
+          y2018: '2018',
+          y2017: '2017',
+          y2016: '2016',
+          y2015: '2015'
+        },{
+          type: '数学二',
+          y2018: '2018',
+          y2017: '2017',
+          y2016: '2016',
+          y2015: '2015'
+        },{
+          type: '数学三',
+          y2018: '2018',
+          y2017: '2017',
+          y2016: '2016',
+          y2015: '2015'
+        },{
+          type: '计算机',
+          y2018: '2018',
+          y2017: '2017',
+          y2016: '2016',
+          y2015: '2015'
+        }],
         fileList: [],
         top_10_files: [],
         fileId: '',
@@ -65,7 +155,7 @@
           title: '',
           content: ''
         },
-        nav: '全部',
+        nav: '历史真题',
         toast: false,
         regMsg: '',
         total: 130,
@@ -93,6 +183,10 @@
       },
       handleSelect (val) {
         this.value = val
+      },
+      downZT(index,row) {
+        console.log(index);
+
       },
       handleDownload (val) {
         console.log(val);

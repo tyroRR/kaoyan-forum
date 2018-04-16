@@ -1,58 +1,71 @@
 <template>
     <div class="content">
-      <div class="carousel">
-        <el-carousel :interval="4000" type="card" height="200px">
-          <el-carousel-item v-for="item in 6" :key="item">
-            <h3>{{ item }}</h3>
-          </el-carousel-item>
-        </el-carousel>
-      </div>
-      <div class="nav-card-group">
-        <div class="nav-card">
-          <mu-card>
-            <mu-card-media>
-              <img src="../../assets/nav1.jpg" />
-            </mu-card-media>
-            <mu-card-actions>
-              <mu-flat-button label="资料下载" labelPosition="before" icon="folder" @click="$router.push({ path: '/Document' })"/>
-            </mu-card-actions>
-          </mu-card>
+      <el-main>
+        <template>
+          <el-carousel :interval="4000" type="card" height="350px" >
+            <el-carousel-item v-for="item in 6" :key="item">
+              <h3>{{ item }}</h3>
+            </el-carousel-item>
+          </el-carousel>
+        </template>
+        <div class="row text-group">
+          <el-col :span="8">
+            <div class="text">
+              <h3>Text1</h3>
+              <p>Lorem ipsum dolor sit amet consectetur adipiscing elit sed tempor incididunt ut laboret dolore magna ut consequat siad esqudiat dolor</p>
+              <a class="link" href="#">Read More</a>
+            </div>
+          </el-col>
+          <el-col :span="8">
+            <div class="text">
+              <h3>Text2</h3>
+              <p>Lorem ipsum dolor sit amet consectetur adipiscing elit sed tempor incididunt ut laboret dolore magna ut consequat siad esqudiat dolor</p>
+              <a class="link" href="#">Read More</a>
+            </div>
+          </el-col>
+          <el-col :span="8">
+            <div class="text">
+              <h3>Text3</h3>
+              <p>Lorem ipsum dolor sit amet consectetur adipiscing elit sed tempor incididunt ut laboret dolore magna ut consequat siad esqudiat dolor</p>
+              <a class="link" href="#">Read More</a>
+            </div>
+          </el-col>
         </div>
-        <div class="nav-card">
-          <mu-card>
-            <mu-card-media>
-              <img src="../../assets/nav2.jpg" />
-            </mu-card-media>
-            <mu-card-actions>
-              <mu-flat-button label="网络课堂" labelPosition="before" icon=" movie" @click="$router.push({ path: '/OnlineClass' })"/>
-            </mu-card-actions>
-          </mu-card>
+        <div class="row pic-wall">
+          <el-col :span="12" class="pic-wrapper">
+            <img src="" alt="">
+            <p>pic1</p>
+          </el-col>
+          <el-col :span="12" class="pic-wrapper">
+            <div class="wrap-inner">
+              <img src="" alt="">
+              <p>pic2</p>
+            </div>
+            <div class="wrap-inner">
+              <img src="" alt="">
+              <p>pic3</p>
+            </div>
+          </el-col>
         </div>
-        <div class="nav-card">
-          <mu-card>
-            <mu-card-media>
-              <img src="../../assets/nav3.jpg" />
-            </mu-card-media>
-            <mu-card-actions>
-              <mu-flat-button label="社区交流" labelPosition="before" icon="people" @click="$router.push({ path: '/Community' })"/>
-            </mu-card-actions>
-          </mu-card>
-        </div>
-      </div>
-      <div class="info-pub">
-        <div class="info-list">
-          <mu-list>
-            <mu-sub-header>考研信息 {{new Date().toLocaleDateString()}}</mu-sub-header>
-            <div class="item-wrapper" v-for="item in infoList"  >
-              <mu-list-item :title="item.title" @click="showDetail(item)">
+        <el-col :span="24">
+          <div class="info-pub">
+            <div class="info-list">
+              <mu-list>
+                <mu-sub-header>考研信息 {{new Date().toLocaleDateString()}}</mu-sub-header>
+                <div class="item-wrapper" v-for="item in infoList"  >
+                  <mu-list-item :title="item.title" @click="showDetail(item)">
                 <span slot="describe">
         <span style="color: rgba(0, 0, 0, .87)">{{item.sponsor + ' -'}}</span>{{' '+item.content}}</span>
-              </mu-list-item>
-              <mu-divider inset/>
+                  </mu-list-item>
+                  <mu-divider inset/>
+                </div>
+              </mu-list>
             </div>
-          </mu-list>
-        </div>
-      </div>
+          </div>
+        </el-col>
+
+
+      </el-main>
     </div>
 </template>
 <script>
@@ -99,14 +112,14 @@
     background-color: #d3dce6;
   }
 
-  .nav-card-group{
-    display: flex;
-    justify-content: space-between;
-    margin: 20px auto;
+  .text-group,.pic-wall{
+    padding: 50px 0;
+    border-bottom:solid thin #EDF2FC;
   }
 
-  .nav-card{
-    width: 30%;
+  .pic-wall{
+    background-color: #EDF2FC;
+    margin: 20px auto;
   }
 
   .info-pub{
