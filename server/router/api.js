@@ -134,6 +134,28 @@ router.get(`/getLessonList`,(req,res) =>{
   });
 });
 
+router.post(`/admin/postTopic`,(req,res) =>{
+  let topicArray = req.body.topicList;
+  console.log(topicArray);
+  const createTime = new Date().toLocaleString();
+  if(topicArray instanceof Array){
+    topicArray.map(t=>{
+      t.createTime = createTime
+    });
+    Topic.create(topicArray).then((topics)=>{
+      console.log(topics)
+    });
+  }
+  else {
+    resData.code = 2;
+    resData.message = 'data type error';
+    res.json(resData)
+  }
+  resData.code = 1;
+  resData.message = 'success';
+  res.json(resData)
+});
+
 router.post(`/admin/postInfo`,(req,res) =>{
   const createTime = new Date().toLocaleString();
   const info = new Info({

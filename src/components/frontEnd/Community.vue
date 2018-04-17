@@ -50,15 +50,27 @@
           </div>
           <div class="tips bm">
             <mu-paper>
-              <mu-card-header title="小帖士"/>
+              <mu-card-header title="励志语录"/>
               <mu-divider />
-              <mu-list-item title="Tip 1">
+              <mu-list-item title="不忘初心，矢志前行">
                 <mu-icon slot="right" value="info"/>
               </mu-list-item>
-              <mu-list-item title="Tip 2">
+              <mu-list-item title="既然选择了远方，便只顾风雨兼程">
                 <mu-icon slot="right" value="info"/>
               </mu-list-item>
-              <mu-list-item title="Tip 3">
+              <mu-list-item title="你的孤独，虽败犹荣">
+                <mu-icon slot="right" value="info"/>
+              </mu-list-item>
+              <mu-list-item title="路漫漫其修远兮，吾将上下而求索">
+                <mu-icon slot="right" value="info"/>
+              </mu-list-item>
+              <mu-list-item title="想过成功，想过失败，但从没想过放弃">
+                <mu-icon slot="right" value="info"/>
+              </mu-list-item>
+              <mu-list-item title="真正无愧自己的努力才是真的见证">
+                <mu-icon slot="right" value="info"/>
+              </mu-list-item>
+              <mu-list-item title="临渊羡鱼，不如退而结网">
                 <mu-icon slot="right" value="info"/>
               </mu-list-item>
             </mu-paper>
@@ -67,10 +79,10 @@
             <mu-card>
               <mu-card-header title="社区规则"/>
               <mu-divider />
-              <mu-list-item title="Rule 1">
+              <mu-list-item title="文明交流，分享经验">
                 <mu-icon slot="right" value="info"/>
               </mu-list-item>
-              <mu-list-item title="Rule 2">
+              <mu-list-item title="积极向上，奋发图强">
                 <mu-icon slot="right" value="info"/>
               </mu-list-item>
             </mu-card>

@@ -5,5 +5,5 @@ module.exports = new mongoose.Schema({
   content:String,
   sponsor:String,
   avatar:String,
-  createTime:Date
+  createTime:String
 });
