@@ -9,7 +9,7 @@
             <mu-bottom-nav-item value="数学" title="数学" icon="description"/>
             <mu-bottom-nav-item value="英语" title="英语" icon="description"/>
             <mu-bottom-nav-item value="政治" title="政治" icon="description"/>
-            <mu-bottom-nav-item value="专业课" title="专业课" icon="description"/>
+            <mu-bottom-nav-item value="计算机" title="计算机" icon="description"/>
           </mu-bottom-nav>
         </mu-paper>
       </mu-col>

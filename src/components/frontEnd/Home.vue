@@ -44,7 +44,7 @@
             <mu-card>
               <mu-card-text>
                 <h3>社区交流</h3>
-                <p>和研友们轻松抱团，一起分享考研信息，考研经验和真题笔记资料，让考研简单不孤单</p>
+                <p>和研友们轻松抱团，一起分享考研信息，让考研简单不孤单</p>
                 <a class="link" style="cursor:pointer" @click="$router.push({ path: '/Community' })">Read More</a>
               </mu-card-text>
             </mu-card>
