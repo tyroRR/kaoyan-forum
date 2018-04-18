@@ -7,6 +7,7 @@ const api = {
   reqGetUserList: () => axios.get(`admin/getUserList`),
   reqCreateUser: params => axios.put(`/admin/createUser`, params),
   reqUpdateUser: (uid, params) => axios.patch(`/admin/updateUserInfo/${uid}`, params),
+  reqDeleteUser: uid => axios.delete(`/admin/deleteUser/${uid}`),
   reqGetLessonList: () => axios.get(`/getLessonList`),
   reqGetInfoList: () => axios.get(`/getInfoList`),
   reqGetTopicList: type => axios.get(`/getTopicList`, type),

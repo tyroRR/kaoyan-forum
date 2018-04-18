@@ -68,7 +68,6 @@
 </template>
 
 <script>
-  //import { getToken, setToken, removeToken } from '@/utils/auth'
 
   export default {
     name: 'dashboard',

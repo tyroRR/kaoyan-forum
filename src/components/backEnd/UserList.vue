@@ -253,6 +253,20 @@
           this.$message.error('修改失败！');
           this.resetUpdate();
         })
+      },
+      handleDelete(row) {
+        this.$confirm('此操作将删除用户 ' + row.username + ', 是否继续?', '提示', { type: 'warning' })
+          .then(() => {
+            api.reqDeleteUser(row._id).then(() =>{
+              this.$message.success('删除成功！');
+              this.getUsers();
+            }).catch(() => {
+              this.$message.error('删除失败！');
+            })
+          })
+          .catch(() => {
+            this.$message.info('已取消操作!');
+          });
       }
     }
   }
