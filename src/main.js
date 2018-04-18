@@ -11,6 +11,8 @@ import 'muse-ui/dist/theme-light.css'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import 'material-design-icons/iconfont/material-icons.css'
+import '@/assets/styles/main.scss'
+import '@/assets/fonts/iconfont.css'
 
 Vue.config.productionTip = false;
 //Vue.use(VueAxios, axios);

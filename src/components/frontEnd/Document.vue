@@ -165,7 +165,7 @@
       }
     },
     mounted: function () {
-      api.reqGetFileList().then(res=>{
+      api.reqGetDocList().then(res=>{
         this.fileList = res.data;
         this.top_10_files = res.data.slice(0,9);
       })
@@ -194,7 +194,7 @@
         if(sessionStorage.getItem('isLogin')){
           const uid = JSON.parse(sessionStorage.getItem('userInfo')).id;
           api.reqDownload(uid,fid);
-          api.reqGetFileList().then(res=>{
+          api.reqGetDocList().then(res=>{
             this.fileList = res.data;
             this.top_10_files = res.data.slice(0,9);
           })

@@ -13,11 +13,11 @@
       </div>
       <div class="topbar-account topbar-btn">
         <el-dropdown trigger="click">
-          <span class="el-dropdown-link userinfo-inner"><i class="iconfont icon-user"></i>{{sysUserName}}<i
+          <span class="el-dropdown-link userinfo-inner"><i class="iconfont icon-account"></i> {{userInfo.username}}<i
             class="iconfont icon-down"></i></span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>
-              <router-link to="/dashboard"><span style="color: #555;font-size: 14px;">首页</span></router-link>
+              <router-link to="/"><span style="color: #555;font-size: 14px;">首页</span></router-link>
             </el-dropdown-item>
             <el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
@@ -74,7 +74,6 @@
     name: 'dashboard',
     data () {
       return {
-        sysUserName: '',
         collapsed: false,
         userInfo:{},
         rootPermission:[],
@@ -128,10 +127,9 @@
       }
     },
     mounted() {
-      let userInfo = sessionStorage.getItem('access-user');
+      let userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
       if (userInfo) {
-        userInfo = JSON.parse(userInfo);
-        this.sysUserName = userInfo.name;
+        console.log(userInfo);
         this.userInfo = userInfo;
       }
       this.permission();
