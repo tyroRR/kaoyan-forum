@@ -10,9 +10,17 @@ const api = {
   reqDeleteUser: uid => axios.delete(`/admin/deleteUser/${uid}`),
   reqGetLessonList: () => axios.get(`/getLessonList`),
   reqGetInfoList: () => axios.get(`/getInfoList`),
+  reqPostInfo: params => axios.post(`/admin/postInfo`, params),
+  reqUpdateInfo: (id, params) => axios.patch(`/admin/updateInfo/${id}`, params),
+  reqDeleteInfo: (id, params) => axios.delete(`/admin/deleteInfo/${id}`),
   reqGetTopicList: type => axios.get(`/getTopicList`, type),
+  reqPostTopic: params => axios.post(`/admin/postTopic`, params),
+  //reqPostTopicList: params => axios.post(`/admin/postTopicList`, params),
+  reqUpdateTopic: (id, params) => axios.patch(`/admin/updateTopic/${id}`, params),
+  reqDeleteTopic: (id, params) => axios.delete(`/admin/deleteTopic/${id}`),
   reqGetDocList: () => axios.get(`/getDocList`),
-  reqPostTopic: (uid, params) => axios.post(`/user/${uid}/postTopic`, params),
+  reqUploadFiles: params => axios.post(`/admin/uploadFiles`, params),
+  reqUserPostTopic: (uid, params) => axios.post(`/user/${uid}/postTopic`, params),
   reqDownload: (uid, fid) => window.open(`http://localhost:8081/api/user/${uid}/file/${fid}`)
 };
 

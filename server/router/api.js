@@ -1,4 +1,5 @@
 const express = require('express');
+const upload = require('../utils/multerUtil');
 const router = express.Router();
 const User = require('../models/User');
 const Topic = require('../models/Topic');
@@ -222,19 +223,72 @@ router.delete(`/admin/deleteUser/:uid`,(req,res) => {
   })
 });
 
-router.get(`/getLessonList`,(req,res) =>{
-  Lesson.find().then(doc=> {
-    resData = doc;
-    res.send(resData)
-  }).catch(err=>{
-    resData.message = 1;
-    resData.message = `failed`;
-    console.log(err);
-    res.json(resData);
+router.post(`/admin/postInfo`,(req,res) =>{
+  const createTime = new Date().toLocaleString();
+  const info = new Info({
+    title : req.body.title,
+    content : req.body.content,
+    sponsor : req.body.sponsor,
+    createTime : createTime
   });
+  info.save();
+  resData.code = 0;
+  resData.message = 'success';
+  res.json(resData)
 });
 
-router.post(`/admin/postTopic`,(req,res) =>{
+router.patch(`/admin/updateInfo/:id`,(req,res) =>{
+  const id = req.params.id;
+  const title = req.body.title;
+  const sponsor = req.body.sponsor;
+  const content = req.body.content;
+
+  Info.findByIdAndUpdate(id, {
+    title: title,
+    sponsor: sponsor,
+    content: content
+  }).then(()=>{
+      resData.code = 0;
+      resData.message = 'success';
+      res.send(resData)
+    }
+  ).catch(()=>{
+    resData.code = 1;
+    resData.message = 'failed';
+    res.send(resData)
+  })
+});
+
+router.delete(`/admin/deleteInfo/:id`,(req,res) =>{
+  const id = req.params.id;
+
+  Info.findByIdAndRemove(id).then(()=>{
+      resData.code = 0;
+      resData.message = 'success';
+      res.send(resData)
+    }
+  ).catch(()=>{
+    resData.code = 1;
+    resData.message = 'failed';
+    res.send(resData)
+  })
+});
+
+router.post(`/admin/postTopic`, (req,res) =>{
+  const createTime = new Date().toLocaleString();
+  const topic = new Topic({
+    title : req.body.title,
+    content : req.body.content,
+    sponsor : req.body.sponsor,
+    createTime : createTime
+  });
+  topic.save();
+  resData.code = 0;
+  resData.message = 'success';
+  res.json(resData)
+});
+
+router.post(`/admin/postTopicList`,(req,res) =>{
   let topicArray = req.body.topicList;
   console.log(topicArray);
   const createTime = new Date().toLocaleString();
@@ -247,28 +301,77 @@ router.post(`/admin/postTopic`,(req,res) =>{
     });
   }
   else {
-    resData.code = 2;
+    resData.code = 1;
     resData.message = 'data type error';
     res.json(resData)
   }
-  resData.code = 1;
+  resData.code = 0;
   resData.message = 'success';
   res.json(resData)
 });
 
-router.post(`/admin/postInfo`,(req,res) =>{
+router.patch(`/admin/updateTopic/:id`,(req,res) =>{
+  const id = req.params.id;
+  const title = req.body.title;
+  const sponsor = req.body.sponsor;
+  const content = req.body.content;
+
+  Topic.findByIdAndUpdate(id, {
+    title: title,
+    sponsor: sponsor,
+    content: content
+  }).then(()=>{
+      resData.code = 0;
+      resData.message = 'success';
+      res.send(resData)
+    }
+  ).catch(()=>{
+    resData.code = 1;
+    resData.message = 'failed';
+    res.send(resData)
+  })
+});
+
+router.delete(`/admin/deleteTopic/:id`,(req,res) =>{
+  const id = req.params.id;
+
+  Topic.findByIdAndRemove(id).then(()=>{
+      resData.code = 0;
+      resData.message = 'success';
+      res.send(resData)
+    }
+  ).catch(()=>{
+    resData.code = 1;
+    resData.message = 'failed';
+    res.send(resData)
+  })
+});
+
+router.post(`/admin/uploadFiles`,upload.array('files', 10),(req,res) =>{
+  const type = req.body.type;
+  const fileList = req.files;
+
   const createTime = new Date().toLocaleString();
-  const info = new Info({
-    title : req.body.title,
-    content : req.body.content,
-    sponsor : "admin",
-    avatar : req.body.avatar,
-    createTime : createTime
+
+  fileList.map(t=>{
+    t.fileName = (t.originalname).split('.')[0];
+    t.url = `${t.destination}/${type}/${t.originalname}`;
+    t.count =0;
+    t.type = type;
+    t.createTime = createTime;
   });
-  info.save();
-  resData.code = 1;
-  resData.message = 'success';
-  res.json(resData)
+  console.log(fileList);
+  Document.create(fileList).then((file)=>{
+    console.log(file);
+    resData.code = 0;
+    resData.message = 'success';
+    res.json(resData)
+  }).catch(err=>{
+    resData.message = 1;
+    resData.message = `failed`;
+    console.log(err);
+    res.json(resData);
+  });
 });
 
 router.get(`/getInfoList`,(req,res) =>{
@@ -285,6 +388,18 @@ router.get(`/getInfoList`,(req,res) =>{
 
 router.get(`/getTopicList`,(req,res) =>{
   Topic.find().then(doc=> {
+    resData = doc;
+    res.send(resData)
+  }).catch(err=>{
+    resData.message = 1;
+    resData.message = `failed`;
+    console.log(err);
+    res.json(resData);
+  });
+});
+
+router.get(`/getLessonList`,(req,res) =>{
+  Lesson.find().then(doc=> {
     resData = doc;
     res.send(resData)
   }).catch(err=>{

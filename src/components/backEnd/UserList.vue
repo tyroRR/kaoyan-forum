@@ -66,10 +66,10 @@
       <el-dialog title="创建用户" center v-model="dialogCreateVisible" :visible.sync="dialogCreateVisible" :close-on-click-modal="false" @close="resetCreate">
         <el-form ref="create" :model="create" :rules="createRules"  label-width="120px">
           <el-form-item prop="username" label="用户名">
-            <el-input v-model="create.username"></el-input>
+            <el-input v-model="create.username" placeholder="请输入用户名"></el-input>
           </el-form-item>
           <el-form-item prop="password" label="密码">
-            <el-input v-model="create.password"></el-input>
+            <el-input v-model="create.password" placeholder="请输入密码"></el-input>
           </el-form-item>
           <el-form-item prop="role" label="权限">
             <el-select v-model="create.role" placeholder="请选择用户权限">
@@ -84,7 +84,7 @@
         </div>
       </el-dialog>
 
-      <el-dialog title="修改用户信息" v-model="dialogUpdateVisible" :visible.sync="dialogUpdateVisible" :close-on-click-modal="false" @close="resetUpdate">
+      <el-dialog title="修改用户信息" v-model="dialogUpdateVisible" :visible.sync="dialogUpdateVisible" :close-on-click-modal="false">
         <el-form ref="update" :model="update" label-width="100px">
           <el-form-item prop="username" label="用户名">
             <el-input v-model="update.username"></el-input>
@@ -93,7 +93,7 @@
             <el-input v-model="update.password"></el-input>
           </el-form-item>
           <el-form-item prop="role" label="权限">
-            <el-select v-model="update.role" placeholder="请选择用户权限">
+            <el-select v-model="update.role">
               <el-option label="普通用户" value="user"></el-option>
               <el-option label="管理员" value="admin"></el-option>
             </el-select>
@@ -124,12 +124,6 @@
   export default {
     data: function() {
       return {
-        userInfo:{
-          id:'',
-          account:'',
-          name:'',
-          role:''
-        },
         userList: [],
         create: {},
         updateId: '',
@@ -185,9 +179,6 @@
       },
       resetCreate() {
         this.$refs.create.resetFields();
-      },
-      resetUpdate() {
-        this.$refs.update.resetFields();
       },
       getUsers() {
         this.loading = true;
@@ -246,12 +237,10 @@
       updateInfo() {
         api.reqUpdateUser(this.updateId,this.update).then(() => {
           this.$message.success('修改成功！');
-          this.resetUpdate();
           this.dialogUpdateVisible = false;
           this.getUsers();
         }).catch(() => {
           this.$message.error('修改失败！');
-          this.resetUpdate();
         })
       },
       handleDelete(row) {

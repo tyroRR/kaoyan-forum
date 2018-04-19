@@ -16,24 +16,34 @@
       <el-col :span="24" class="toolbar">
         <el-form :inline="true" class="demo-form-inline">
           <el-input :placeholder="placeholder" v-model="keywords" style="width: 400px; margin-right: 12px" @keyup.enter.native="getUsers">
-            <el-select class="sel-placeholder" v-model="select" @change="searchFieldChange" slot="prepend" style="width:118px">
+            <el-select v-model="select" @change="searchFieldChange" slot="prepend" style="width:118px">
               <el-option label="作者" value="sponsor"></el-option>
               <el-option label="标题" value="title"></el-option>
+              <el-option label="创建时间" value="createTime"></el-option>
             </el-select>
-            <el-button slot="append" icon="el-icon-search" @click="getUsers">查询</el-button>
+            <el-button slot="append" icon="el-icon-search" @click="getInfo">查询</el-button>
           </el-input>
           <el-button type="info" plain icon="el-icon-plus" @click="dialogCreateVisible = true">添加信息</el-button>
           <el-button type="info" plain icon="el-icon-delete" @click="dialogMulDeleteVisible = true">批量删除</el-button>
         </el-form>
       </el-col>
 
-      <el-table :data="userList"
+      <el-table :data="infoList"
                 style="width: 100%"
                 height="680"
-                ref="userList">
+                ref="infoList">
         <el-table-column
           type="selection"
           width="55">
+        </el-table-column>
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form label-position="left" inline class="demo-table-expand">
+              <el-form-item label="文章内容：">
+                <span>{{ props.row.content }}</span>
+              </el-form-item>
+            </el-form>
+          </template>
         </el-table-column>
         <el-table-column prop="title" label="标题" align="center"></el-table-column>
         <el-table-column prop="sponsor" label="作者" align="center"></el-table-column>
@@ -42,7 +52,7 @@
           <template slot-scope="scope">
             <el-button
               size="mini" type="warning" plain
-              @click="handleUpdate(scope.row)">修改信息
+              @click="handleUpdate(scope.row)">编辑
             </el-button>
             <el-button
               size="mini" type="danger" plain
@@ -53,19 +63,18 @@
 
       </el-table>
 
-      <el-dialog title="创建用户" center v-model="dialogCreateVisible" :visible.sync="dialogCreateVisible" :close-on-click-modal="false" @close="resetCreate" >
+      <el-dialog title="添加信息" center v-model="dialogCreateVisible" :visible.sync="dialogCreateVisible" :close-on-click-modal="false" @close="resetCreate" >
         <el-form ref="create" :model="create" :rules="createRules"  label-width="120px">
-          <el-form-item prop="name" label="用户名">
-            <el-input v-model="create.username"></el-input>
+          <el-form-item prop="title" label="标题">
+            <el-input v-model="create.title" placeholder="请输入标题"></el-input>
           </el-form-item>
-          <el-form-item prop="password" label="密码">
-            <el-input v-model="create.password"></el-input>
-          </el-form-item>
-          <el-form-item prop="role" label="权限">
-            <el-select v-model="create.role" placeholder="请选择用户权限">
-              <el-option label="普通用户" value="user"></el-option>
-              <el-option label="管理员" value="admin"></el-option>
-            </el-select>
+          <el-form-item prop="content" label="内容">
+            <el-input
+              type="textarea"
+              :autosize="{ minRows: 10, maxRows: 100}"
+              placeholder="请输入内容..."
+              v-model="create.content">
+            </el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -74,19 +83,18 @@
         </div>
       </el-dialog>
 
-      <el-dialog title="修改用户信息" v-model="dialogUpdateVisible" :visible.sync="dialogUpdateVisible" :close-on-click-modal="false">
+      <el-dialog title="编辑信息" v-model="dialogUpdateVisible" :visible.sync="dialogUpdateVisible" :close-on-click-modal="false">
         <el-form ref="update" :model="update" label-width="100px">
-          <el-form-item prop="username" label="用户名">
-            <el-input v-model="update.username"></el-input>
+          <el-form-item prop="title" label="标题">
+            <el-input v-model="update.title"></el-input>
           </el-form-item>
-          <el-form-item prop="password" label="密码">
-            <el-input v-model="update.password"></el-input>
-          </el-form-item>
-          <el-form-item prop="role" label="权限">
-            <el-select v-model="update.role" placeholder="请选择用户权限">
-              <el-option label="普通用户" value="user"></el-option>
-              <el-option label="管理员" value="admin"></el-option>
-            </el-select>
+          <el-form-item prop="content" label="内容">
+            <el-input
+              type="textarea"
+              :autosize="{ minRows: 10, maxRows: 100}"
+              placeholder="请输入内容..."
+              v-model="update.content">
+            </el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -94,7 +102,6 @@
           <el-button type="primary" plain :loading="updateLoading" @click="updateInfo">提交</el-button>
         </div>
       </el-dialog>
-
 
       <el-pagination class="paging"
                      :current-page="filter.currentPage"
@@ -115,29 +122,22 @@
   let placeholders = {
     "sponsor":"请输入用户名",
     "title":"请输入标题",
+    "createTime":"创建时间"
   };
 
   export default {
     data: function() {
       return {
-        userInfo:{
-          id:'',
-          account:'',
-          name:'',
-          role:''
-        },
-        userList: [],
+        userInfo: {},
+        infoList: [],
         create: {},
         update:{},
         createRules: {
-          username: [
-            { required: true, message: '请输入用户名', trigger: 'blur' },
+          title: [
+            { required: true, message: '请输入标题', trigger: 'blur' },
           ],
-          password: [
-            { required: true, message: '请输入密码', trigger: 'blur' },
-          ],
-          role: [
-            { required: true, message: '请选择权限', trigger: 'blur' },
+          content: [
+            { required: true, message: '请输入内容', trigger: 'blur' },
           ],
         },
         filter: {
@@ -159,7 +159,8 @@
       };
     },
     mounted: function() {
-      this.getUsers();
+      this.getInfo();
+      this.userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
     },
     methods: {
       tableSelectionChange(val) {
@@ -173,50 +174,49 @@
       pageSizeChange(val) {
         console.log(`每页 ${val} 条`);
         this.filter.pageSize = val;
-        this.getUsers();
+        this.getInfo();
       },
       pageCurrentChange(val) {
         console.log(`当前页: ${val}`);
         this.filter.currentPage = val;
-        this.getUsers();
+        this.getInfo();
       },
-      // 重置
       resetCreate() {
         this.$refs.create.resetFields();
       },
-      getUsers() {
+      getInfo() {
         this.loading = true;
         api.reqGetInfoList().then(res => {
-          this.userList = res.data;
+          this.infoList = res.data;
           //查询
           let queryData = [];
           if(this.keywords !==""){
-            for (let i=0,lenI=this.userList.length;i<lenI;i++) {
+            for (let i=0,lenI=this.infoList.length;i<lenI;i++) {
               let reg = new RegExp(this.keywords);
-              console.log(this.userList[i][this.select]);
-              if(this.userList[i][this.select].toString().match(reg)){
-                queryData.push(this.userList[i]);
+              console.log(this.infoList[i][this.select]);
+              if(this.infoList[i][this.select].toString().match(reg)){
+                queryData.push(this.infoList[i]);
               }
             }
           }
-          else queryData = this.userList;
+          else queryData = this.infoList;
           this.totalRows = queryData.length;
           //分页
           this.filter.beginIndex = (this.filter.currentPage-1)*this.filter.pageSize;
-          this.userList = queryData.splice(this.filter.beginIndex,this.filter.pageSize);
+          this.infoList = queryData.splice(this.filter.beginIndex,this.filter.pageSize);
           this.loading = false;
         })
       },
       handleCreate(){
         this.$refs.create.validate((valid) => {
           if (valid) {
-            console.log(this.create);
-            api.reqCreateUser(this.create).then(res => {
+            this.create.sponsor = this.userInfo.username;
+            api.reqPostInfo(this.create).then(res => {
               if(res.data.code === 0){
                 this.$message.success('创建成功！');
                 this.resetCreate();
                 this.dialogCreateVisible = false;
-                this.getUsers();
+                this.getInfo();
               }
               else {
                 this.$message.error('创建失败！');
@@ -234,20 +234,33 @@
       },
       handleUpdate(row) {
         this.dialogUpdateVisible = true;
-        this.update.username = row.username;
-        this.update.password = row.password;
-        this.update.role = row.role;
+        this.updateId = row._id;
+        this.update.title = row.title;
+        this.update.sponsor = this.userInfo.username;
+        this.update.content = row.content;
       },
       updateInfo() {
-        this.$http.patch(`/xpay/admin/${this.userInfo.id}/`,this.formEdit).then(() => {
+        api.reqUpdateInfo(this.updateId,this.update).then(() => {
           this.$message.success('修改成功！');
-          this.$refs.formEdit.resetFields();
-          this.dialogChangePwdVisible = false;
-          this.getUsers();
+          this.dialogUpdateVisible = false;
+          this.getInfo();
         }).catch(() => {
           this.$message.error('修改失败！');
-          this.$refs.formEdit.resetFields();
         })
+      },
+      handleDelete(row) {
+        this.$confirm('此操作将删除信息 ' + row.title + ', 是否继续?', '提示', { type: 'warning' })
+          .then(() => {
+            api.reqDeleteInfo(row._id).then(() =>{
+              this.$message.success('删除成功！');
+              this.getInfo();
+            }).catch(() => {
+              this.$message.error('删除失败！');
+            })
+          })
+          .catch(() => {
+            this.$message.info('已取消操作!');
+          });
       }
     }
   }

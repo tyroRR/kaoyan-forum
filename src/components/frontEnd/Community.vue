@@ -187,7 +187,7 @@
               sponsor: userInfo.username,
               avatar: userInfo.avatar
             };
-            api.reqPostTopic(userInfo.id,params).then(() =>{
+            api.reqUserPostTopic(userInfo.id,params).then(() =>{
               this.postTopicDialog = false;
               this.regMsg = '发布成功！';
               this.topic = {};
