@@ -19,7 +19,11 @@
 
 <style scoped>
   .footer{
+    position: fixed;
+    bottom:0;
+    left: 50%;
     padding: 20px 0;
     text-align: center;
+    z-index : -999;
   }
 </style>

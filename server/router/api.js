@@ -356,7 +356,7 @@ router.post(`/admin/uploadFiles`,upload.array('files', 10),(req,res) =>{
   fileList.map(t=>{
     t.fileName = (t.originalname).split('.')[0];
     t.url = `${t.destination}/${type}/${t.originalname}`;
-    t.count =0;
+    t.count = 0;
     t.type = type;
     t.createTime = createTime;
   });
@@ -372,6 +372,48 @@ router.post(`/admin/uploadFiles`,upload.array('files', 10),(req,res) =>{
     console.log(err);
     res.json(resData);
   });
+});
+
+router.patch(`/admin/updateFile/:id`,(req,res) =>{
+  const id = req.params.id;
+  const fileName = req.body.fileName;
+  const url = req.body.url;
+  const count = req.body.count;
+  const type = req.body.type;
+  const createTime = new Date().toLocaleString();
+
+  Document.findByIdAndUpdate(id, {
+    id: fileName,
+    fileName: fileName,
+    url: url,
+    count: count,
+    type: type,
+    createTime: createTime,
+  }).then(()=>{
+      resData.code = 0;
+      resData.message = 'success';
+      res.send(resData)
+    }
+  ).catch(()=>{
+    resData.code = 1;
+    resData.message = 'failed';
+    res.send(resData)
+  })
+});
+
+router.delete(`/admin/deleteFile/:id`,(req,res) =>{
+  const id = req.params.id;
+
+  Document.findByIdAndRemove(id).then(()=>{
+      resData.code = 0;
+      resData.message = 'success';
+      res.send(resData)
+    }
+  ).catch(()=>{
+    resData.code = 1;
+    resData.message = 'failed';
+    res.send(resData)
+  })
 });
 
 router.get(`/getInfoList`,(req,res) =>{

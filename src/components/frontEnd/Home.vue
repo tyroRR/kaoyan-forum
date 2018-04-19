@@ -2,22 +2,24 @@
     <div class="content">
       <el-main>
         <template>
-          <mu-card class="title">
-            <mu-card-title title="KY-forum"/>
-            <mu-card-text>
-              在一个人奋斗的道路上，你也许会孤单寂寞，可是别忘了，朋友的祝福还在，父母的叮咛还在，对希望的追求还在，至少你的信仰还在。
-              那么再苦再累算什么，你将永远不会孤独，你将永远的走下去。
-            </mu-card-text>
-          </mu-card>
-          <el-carousel :interval="4000" type="card" height="240px" >
+          <el-carousel :interval="4000" type="card" height="300px">
             <el-carousel-item>
-            <img src="../../assets/pic1.jpg">
-          </el-carousel-item>
-            <el-carousel-item>
-              <img src="../../assets/pic2.jpg">
+              <img src="../../assets/img/y12.jpg">
             </el-carousel-item>
             <el-carousel-item>
-              <img src="../../assets/pic3.jpg">
+            <img src="../../assets/img/y13.png">
+            </el-carousel-item>
+            <el-carousel-item>
+              <img src="../../assets/img/y14.jpg">
+            </el-carousel-item>
+            <el-carousel-item>
+              <img src="../../assets/img/y15.jpg">
+            </el-carousel-item>
+            <el-carousel-item>
+              <img src="../../assets/img/y16.png">
+            </el-carousel-item>
+            <el-carousel-item>
+              <img src="../../assets/img/y17.jpg">
             </el-carousel-item>
           </el-carousel>
         </template>
@@ -110,10 +112,6 @@
   }
 </script>
 <style scoped>
-  .title{
-    margin-bottom: 50px;
-  }
-
   .content{
     width: 65%;
     margin: 90px auto;
@@ -129,7 +127,6 @@
 
   .text-group,.pic-wall{
     padding: 50px 0;
-    border-bottom:solid thin #EDF2FC;
   }
 
   .pic-wall{

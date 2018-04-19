@@ -15,7 +15,7 @@
       </mu-row>
       <mu-row gutter class="content">
         <mu-col width="100" tablet="75" desktop="75" class="topic-part">
-          <mu-card>
+          <mu-card style="margin-bottom: 80px">
             <mu-card-title :title="nav"/>
             <mu-card-text>
               <div class="info-list">
@@ -44,7 +44,7 @@
           <div class="post-topic bm">
             <mu-card>
               <mu-card-actions>
-                <mu-flat-button label="发布新话题" class="post-topic" color="#FFF" backgroundColor="#a4c639" @click="postTopic"/>
+                <mu-flat-button label="发布新话题" class="post-topic" color="#FFF" backgroundColor="#009688" @click="postTopic"/>
               </mu-card-actions>
             </mu-card>
           </div>
@@ -135,34 +135,35 @@
         }
       },
       mounted: function () {
-        api.reqGetTopicList().then(res=>{
-          let type = this.topicType();
-          this.topicList = res.data.filter(v=>v.type === type);
-        })
+        this.getTopic();
       },
       methods: {
-        topicType () {
-          let topicType = '';
-          if(this.nav === '考研资讯区'){
-            topicType = 'info'
-          }
-          if(this.nav === '学习讨论区'){
-            topicType = 'dis'
-          }
-          if(this.nav === '经验互动区'){
-            topicType = 'exp'
-          }
-          if(this.nav === '名校交流区'){
-            topicType = 'elite'
-          }
-          return topicType;
-        },
         hideToast () {
           this.toast = false;
           if (this.toastTimer) clearTimeout(this.toastTimer)
         },
+        getTopic() {
+          let type;
+          if(this.nav === '考研资讯区'){
+            type = 'info'
+          }
+          if(this.nav === '学习讨论区'){
+            type = 'dis'
+          }
+          if(this.nav === '经验互动区'){
+            type = 'experience'
+          }
+          if(this.nav === '名校交流区'){
+            type = 'elite'
+          }
+          api.reqGetTopicList().then(res=>{
+            this.topicList = res.data.filter(v=>v.type === type);
+            console.log(this.topicList);
+          })
+        },
         handleChange (val) {
-          this.nav = val
+          this.nav = val;
+          this.getTopic();
         },
         handleClick (){
 

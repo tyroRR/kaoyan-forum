@@ -39,7 +39,7 @@
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" inline class="demo-table-expand">
-              <el-form-item label="文章内容：">
+              <el-form-item label="帖子内容：">
                 <span>{{ props.row.content }}</span>
               </el-form-item>
             </el-form>

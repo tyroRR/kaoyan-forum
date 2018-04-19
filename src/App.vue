@@ -21,7 +21,7 @@
 
 <style>
 body{
-  background-color: rgb(236, 236, 236);
+  background-color: #607d8b;
 }
 
 #app {

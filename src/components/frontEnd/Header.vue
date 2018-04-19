@@ -10,7 +10,7 @@
         <mu-flat-button label="社区交流" slot="right"  @click="$router.push({ path: '/Community' })"/>
         <template v-if="access">
           <mu-icon-menu icon="expand_more" slot="right">
-            <mu-menu-item v-if="userInfo.role === 'admin'" title="后台管理" @click="$router.push({ path: '/Dashboard' })"/>
+            <mu-menu-item v-if="userInfo.role === 'admin'" title="后台管理" @click="$router.push({ path: '/Dashboard/userList' })"/>
             <mu-menu-item title="用户信息" @click="userInfoDialog = true"/>
             <mu-menu-item title="退出" @click="logout"/>
           </mu-icon-menu>

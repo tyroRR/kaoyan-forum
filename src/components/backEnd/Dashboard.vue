@@ -17,9 +17,8 @@
             class="iconfont icon-down"></i></span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>
-              <router-link to="/"><span style="color: #555;font-size: 14px;">首页</span></router-link>
+              <router-link to="/"><span style="color: #555;font-size: 14px;">回到首页</span></router-link>
             </el-dropdown-item>
-            <el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -113,16 +112,6 @@
       },
       showMenu(i, status){
         this.$refs.menuCollapsed.getElementsByClassName('submenu-hook-' + i)[0].style.display = status ? 'block' : 'none';
-      },
-      logout(){
-        var _this = this;
-        this.$confirm('确认退出吗?', '提示', {
-          //type: 'warning'
-        }).then(() => {
-          removeToken();
-          sessionStorage.clear();
-          _this.$router.push('/login');
-        })
       }
     },
     mounted() {

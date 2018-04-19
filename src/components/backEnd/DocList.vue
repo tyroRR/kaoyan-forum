@@ -23,17 +23,17 @@
               <el-option label="下载次数" value="count"></el-option>
               <el-option label="创建时间" value="createTime"></el-option>
             </el-select>
-            <el-button slot="append" icon="el-icon-search" @click="getTopic">查询</el-button>
+            <el-button slot="append" icon="el-icon-search" @click="getFile">查询</el-button>
           </el-input>
-          <el-button type="info" plain icon="el-icon-upload" @click="dialogCreateVisible = true">上传资料</el-button>
+          <el-button type="info" plain icon="el-icon-upload" @click="dialogUploadVisible = true">上传资料</el-button>
           <el-button type="info" plain icon="el-icon-delete" @click="dialogMulDeleteVisible = true">批量删除</el-button>
         </el-form>
       </el-col>
 
-      <el-table :data="topicList"
+      <el-table :data="fileList"
                 style="width: 100%"
                 height="680"
-                ref="topicList">
+                ref="fileList">
         <el-table-column
           type="selection"
           width="55">
@@ -58,7 +58,7 @@
 
       </el-table>
 
-      <el-dialog title="上传资料" center v-model="dialogCreateVisible" :visible.sync="dialogCreateVisible" :close-on-click-modal="false" @close="resetCreate" >
+      <el-dialog title="上传资料" center v-model="dialogUploadVisible" :visible.sync="dialogUploadVisible" :close-on-click-modal="false" @close="resetUpload" >
         <el-form ref="create" :model="create" :rules="createRules"  label-width="120px">
           <el-form-item prop="type" label="所属分类">
             <el-input v-model="create.type" placeholder="请输入类型"></el-input>
@@ -71,7 +71,7 @@
               name="files"
               action=""
               :auto-upload="false"
-              :before-upload="newFile"
+              :before-upload="appendFile"
               multiple>
               <i class="el-icon-upload"></i>
               <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -80,23 +80,24 @@
 
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button plain @click="dialogCreateVisible = false">取 消</el-button>
-          <el-button type="primary" plain :loading="createLoading" @click="handleCreate">提交</el-button>
+          <el-button plain @click="dialogUploadVisible = false">取 消</el-button>
+          <el-button type="primary" plain :loading="createLoading" @click="handleUpload">提交</el-button>
         </div>
       </el-dialog>
 
-      <el-dialog title="编辑帖子" v-model="dialogUpdateVisible" :visible.sync="dialogUpdateVisible" :close-on-click-modal="false">
+      <el-dialog title="修改文件信息" v-model="dialogUpdateVisible" :visible.sync="dialogUpdateVisible" :close-on-click-modal="false">
         <el-form ref="update" :model="update" label-width="100px">
-          <el-form-item prop="title" label="标题">
-            <el-input v-model="update.title"></el-input>
+          <el-form-item prop="fileName" label="文件名">
+            <el-input v-model="update.fileName"></el-input>
           </el-form-item>
-          <el-form-item prop="content" label="内容">
-            <el-input
-              type="textarea"
-              :autosize="{ minRows: 10, maxRows: 100}"
-              placeholder="请输入内容..."
-              v-model="update.content">
-            </el-input>
+          <el-form-item prop="url" label="存储路径">
+            <el-input v-model="update.url"></el-input>
+          </el-form-item>
+          <el-form-item prop="count" label="下载次数">
+            <el-input v-model="update.count"></el-input>
+          </el-form-item>
+          <el-form-item prop="type" label="类型">
+            <el-input v-model="update.type"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -133,7 +134,7 @@
     data: function() {
       return {
         userInfo: {},
-        topicList: [],
+        fileList: [],
         create: {},
         uploadForm: new FormData(),
         update:{},
@@ -156,7 +157,7 @@
         select: 'fileName', //搜索框的搜索字段
         loading: true,
         //selected: [], //已选择项
-        dialogCreateVisible: false, //创建对话框的显示状态
+        dialogUploadVisible: false, //创建对话框的显示状态
         dialogUpdateVisible: false,
         createLoading: false,
         updateLoading: false,
@@ -164,7 +165,7 @@
       };
     },
     mounted: function() {
-      this.getTopic();
+      this.getFile();
       this.userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
     },
     methods: {
@@ -179,95 +180,98 @@
       pageSizeChange(val) {
         console.log(`每页 ${val} 条`);
         this.filter.pageSize = val;
-        this.getTopic();
+        this.getFile();
       },
       pageCurrentChange(val) {
         console.log(`当前页: ${val}`);
         this.filter.currentPage = val;
-        this.getTopic();
+        this.getFile();
       },
-      resetCreate() {
+      resetUpload() {
         this.$refs.create.resetFields();
       },
-      getTopic() {
+      getFile() {
         this.loading = true;
         api.reqGetDocList().then(res => {
-          this.topicList = res.data;
+          this.fileList = res.data;
           //查询
           let queryData = [];
           if(this.keywords !==""){
-            for (let i=0,lenI=this.topicList.length;i<lenI;i++) {
+            for (let i=0,lenI=this.fileList.length;i<lenI;i++) {
               let reg = new RegExp(this.keywords);
-              console.log(this.topicList[i][this.select]);
-              if(this.topicList[i][this.select].toString().match(reg)){
-                queryData.push(this.topicList[i]);
+              console.log(this.fileList[i][this.select]);
+              if(this.fileList[i][this.select].toString().match(reg)){
+                queryData.push(this.fileList[i]);
               }
             }
           }
-          else queryData = this.topicList;
+          else queryData = this.fileList;
           this.totalRows = queryData.length;
           //分页
           this.filter.beginIndex = (this.filter.currentPage-1)*this.filter.pageSize;
-          this.topicList = queryData.splice(this.filter.beginIndex,this.filter.pageSize);
+          this.fileList = queryData.splice(this.filter.beginIndex,this.filter.pageSize);
           this.loading = false;
         })
       },
 
-      newFile (file) {   // before-upload
+      appendFile (file) {   // before-upload
         this.uploadForm.append('files', file);
+        return false;
       },
 
-      handleCreate(){
+      handleUpload(){
         this.$refs.create.validate((valid) => {
           if (valid) {
             this.uploadForm.append('type', this.create.type);
             this.$refs.uploadFile.submit();
-
             api.reqUploadFiles(this.uploadForm).then(res => {
               if(res.data.code === 0){
                 this.$message.success('上传成功！');
-                this.resetCreate();
-                this.dialogCreateVisible = false;
-                this.getTopic();
+                this.resetUpload();
+                this.dialogUploadVisible = false;
+                this.getFile();
               }
               else {
                 this.$message.error('上传失败！');
-                this.resetCreate();
+                this.resetUpload();
               }
             }).catch(() => {
               this.$message.error('上传失败！');
-              this.resetCreate();
+              this.resetUpload();
             })
           }
           else {
             return false;
           }
-
-
         })
       },
+
       handleUpdate(row) {
         this.dialogUpdateVisible = true;
         this.updateId = row._id;
-        this.update.title = row.title;
-        this.update.sponsor = this.userInfo.username;
-        this.update.content = row.content;
+        this.update.fileName = row.fileName;
+        this.update.type = row.type;
+        this.update.url = row.url;
+        this.update.count = row.count;
+        this.update.createTime = row.createTime;
       },
+
       updateInfo() {
-        api.reqUpdateTopic(this.updateId,this.update).then(() => {
+        api.reqUpdateFile(this.updateId,this.update).then(() => {
           this.$message.success('修改成功！');
           this.dialogUpdateVisible = false;
-          this.getTopic();
+          this.getFile();
         }).catch(() => {
           this.$message.error('修改失败！');
         })
       },
+
       handleDelete(row) {
-        this.$confirm('此操作将删除帖子 ' + row.title + ', 是否继续?', '提示', { type: 'warning' })
+        this.$confirm('此操作将删除文件 ' + row.fileName + ', 是否继续?', '提示', { type: 'warning' })
           .then(() => {
-            api.reqDeleteTopic(row._id).then(() =>{
+            api.reqDeleteFile(row._id).then(() =>{
               this.$message.success('删除成功！');
-              this.getTopic();
+              this.getFile();
             }).catch(() => {
               this.$message.error('删除失败！');
             })

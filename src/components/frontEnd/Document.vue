@@ -16,7 +16,7 @@
     </mu-row>
     <mu-row gutter class="content">
       <mu-col width="100" tablet="75" desktop="75" class="topic-part">
-        <mu-card>
+        <mu-card style="margin-bottom: 80px">
           <mu-card-title :title="nav"/>
           <mu-card-text>
             <div class="file-list">
