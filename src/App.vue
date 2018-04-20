@@ -20,9 +20,6 @@
 </script>
 
 <style>
-body{
-  background-color: #607d8b;
-}
 
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;

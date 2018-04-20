@@ -347,7 +347,7 @@ router.delete(`/admin/deleteTopic/:id`,(req,res) =>{
   })
 });
 
-router.post(`/admin/uploadFiles`,upload.array('files', 10),(req,res) =>{
+router.post(`/admin/uploadFiles`,upload.array('files', 20),(req,res) =>{
   const type = req.body.type;
   const fileList = req.files;
 
@@ -361,8 +361,7 @@ router.post(`/admin/uploadFiles`,upload.array('files', 10),(req,res) =>{
     t.createTime = createTime;
   });
   console.log(fileList);
-  Document.create(fileList).then((file)=>{
-    console.log(file);
+  Document.create(fileList).then(()=>{
     resData.code = 0;
     resData.message = 'success';
     res.json(resData)
@@ -404,6 +403,70 @@ router.delete(`/admin/deleteFile/:id`,(req,res) =>{
   const id = req.params.id;
 
   Document.findByIdAndRemove(id).then(()=>{
+      resData.code = 0;
+      resData.message = 'success';
+      res.send(resData)
+    }
+  ).catch(()=>{
+    resData.code = 1;
+    resData.message = 'failed';
+    res.send(resData)
+  })
+});
+
+router.post(`/admin/uploadLessons`,upload.array('lessons', 20),(req,res) =>{
+  const type = req.body.type;
+  const lessonList = req.files;
+
+  const createTime = new Date().toLocaleString();
+
+  lessonList.map(t=>{
+    t.title = (t.originalname).split('.')[0];
+    t.url = `${t.destination}/${t.originalname}`;
+    t.type = type;
+    t.createTime = createTime;
+  });
+  console.log(lessonList);
+  Lesson.create(lessonList).then(()=>{
+    resData.code = 0;
+    resData.message = 'success';
+    res.json(resData)
+  }).catch(err=>{
+    resData.message = 1;
+    resData.message = `failed`;
+    console.log(err);
+    res.json(resData);
+  });
+});
+
+router.patch(`/admin/updateLesson/:id`,(req,res) =>{
+  const id = req.params.id;
+  const title = req.body.title;
+  const url = req.body.url;
+  const type = req.body.type;
+  const createTime = new Date().toLocaleString();
+
+  Lesson.findByIdAndUpdate(id, {
+    title: title,
+    url: url,
+    type: type,
+    createTime: createTime,
+  }).then(()=>{
+      resData.code = 0;
+      resData.message = 'success';
+      res.send(resData)
+    }
+  ).catch(()=>{
+    resData.code = 1;
+    resData.message = 'failed';
+    res.send(resData)
+  })
+});
+
+router.delete(`/admin/deleteLesson/:id`,(req,res) =>{
+  const id = req.params.id;
+
+  Lesson.findByIdAndRemove(id).then(()=>{
       resData.code = 0;
       resData.message = 'success';
       res.send(resData)

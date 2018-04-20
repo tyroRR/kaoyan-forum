@@ -21,7 +21,7 @@
   .footer{
     position: fixed;
     bottom:0;
-    left: 50%;
+    left: 43%;
     padding: 20px 0;
     text-align: center;
     z-index : -999;

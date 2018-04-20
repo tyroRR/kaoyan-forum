@@ -17,15 +17,14 @@
         <el-form :inline="true" class="demo-form-inline">
           <el-input :placeholder="placeholder" v-model="keywords" style="width: 400px; margin-right: 12px" @keyup.enter.native="getUsers">
             <el-select v-model="select" @change="searchFieldChange" slot="prepend" style="width:118px">
-              <el-option label="文件名" value="fileName"></el-option>
+              <el-option label="课件名" value="title"></el-option>
               <el-option label="类型" value="type"></el-option>
               <el-option label="存储路径" value="url"></el-option>
-              <el-option label="下载次数" value="count"></el-option>
               <el-option label="创建时间" value="createTime"></el-option>
             </el-select>
             <el-button slot="append" icon="el-icon-search" @click="getFile">查询</el-button>
           </el-input>
-          <el-button type="info" plain icon="el-icon-upload" @click="dialogUploadVisible = true">上传资料</el-button>
+          <el-button type="info" plain icon="el-icon-upload" @click="dialogUploadVisible = true">上传课件</el-button>
           <el-button type="info" plain icon="el-icon-delete" @click="dialogMulDeleteVisible = true">批量删除</el-button>
         </el-form>
       </el-col>
@@ -38,10 +37,9 @@
           type="selection"
           width="55">
         </el-table-column>
-        <el-table-column prop="fileName" label="文件名" align="center"></el-table-column>
+        <el-table-column prop="title" label="课件名" align="center"></el-table-column>
         <el-table-column prop="type" label="类型" align="center"></el-table-column>
         <el-table-column prop="url" label="存储路径" align="center"></el-table-column>
-        <el-table-column prop="count" label="下载次数" align="center"></el-table-column>
         <el-table-column prop="createTime" label="创建时间" align="center"></el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
@@ -58,12 +56,12 @@
 
       </el-table>
 
-      <el-dialog title="上传资料" center v-model="dialogUploadVisible" :visible.sync="dialogUploadVisible" :close-on-click-modal="false" @close="resetUpload" >
+      <el-dialog title="上传课件" center v-model="dialogUploadVisible" :visible.sync="dialogUploadVisible" :close-on-click-modal="false" @close="resetUpload" >
         <el-form ref="create" :model="create" :rules="createRules"  label-width="120px">
           <el-form-item prop="type" label="所属分类">
             <el-input v-model="create.type" placeholder="请输入类型"></el-input>
           </el-form-item>
-          <el-form-item prop="files" label="文件">
+          <el-form-item prop="files" label="课件">
             <el-upload
               class="upload-demo"
               drag
@@ -85,16 +83,13 @@
         </div>
       </el-dialog>
 
-      <el-dialog title="修改文件信息" v-model="dialogUpdateVisible" :visible.sync="dialogUpdateVisible" :close-on-click-modal="false">
+      <el-dialog title="修改课件信息" v-model="dialogUpdateVisible" :visible.sync="dialogUpdateVisible" :close-on-click-modal="false">
         <el-form ref="update" :model="update" label-width="100px">
-          <el-form-item prop="fileName" label="文件名">
-            <el-input v-model="update.fileName"></el-input>
+          <el-form-item prop="title" label="课件名">
+            <el-input v-model="update.title"></el-input>
           </el-form-item>
           <el-form-item prop="url" label="存储路径">
             <el-input v-model="update.url"></el-input>
-          </el-form-item>
-          <el-form-item prop="count" label="下载次数">
-            <el-input v-model="update.count"></el-input>
           </el-form-item>
           <el-form-item prop="type" label="类型">
             <el-input v-model="update.type"></el-input>
@@ -123,10 +118,9 @@
   import api from '../../config/api-config'
 
   let placeholders = {
-    "fileName":"请输入文件名",
+    "title":"请输入文件名",
     "type":"请输入类型",
     "url":"请输入存储路径",
-    "count":"请输入下载次数",
     "createTime":"创建时间"
   };
 
@@ -153,14 +147,14 @@
         },
         totalRows: 0,
         keywords: '', //搜索框的关键字内容
-        select: 'fileName', //搜索框的搜索字段
+        select: 'title', //搜索框的搜索字段
         loading: true,
         //selected: [], //已选择项
         dialogUploadVisible: false, //创建对话框的显示状态
         dialogUpdateVisible: false,
         createLoading: false,
         updateLoading: false,
-        placeholder:placeholders["fileName"]
+        placeholder:placeholders["title"]
       };
     },
     mounted: function() {
@@ -191,7 +185,7 @@
       },
       getFile() {
         this.loading = true;
-        api.reqGetDocList().then(res => {
+        api.reqGetLessonList().then(res => {
           this.fileList = res.data;
           //查询
           let queryData = [];
@@ -214,7 +208,7 @@
       },
 
       appendFile (file) {   // before-upload
-        this.uploadForm.append('files', file);
+        this.uploadForm.append('lessons', file);
         return false;
       },
 
@@ -223,7 +217,7 @@
           if (valid) {
             this.uploadForm.append('type', this.create.type);
             this.$refs.uploadFile.submit();
-            api.reqUploadFiles(this.uploadForm).then(res => {
+            api.reqUploadLessons(this.uploadForm).then(res => {
               if(res.data.code === 0){
                 this.$message.success('上传成功！');
                 this.resetUpload();
@@ -248,15 +242,14 @@
       handleUpdate(row) {
         this.dialogUpdateVisible = true;
         this.updateId = row._id;
-        this.update.fileName = row.fileName;
+        this.update.title = row.title;
         this.update.type = row.type;
         this.update.url = row.url;
-        this.update.count = row.count;
         this.update.createTime = row.createTime;
       },
 
       updateInfo() {
-        api.reqUpdateFile(this.updateId,this.update).then(() => {
+        api.reqUpdateLesson(this.updateId,this.update).then(() => {
           this.$message.success('修改成功！');
           this.dialogUpdateVisible = false;
           this.getFile();
@@ -266,9 +259,9 @@
       },
 
       handleDelete(row) {
-        this.$confirm('此操作将删除文件 ' + row.fileName + ', 是否继续?', '提示', { type: 'warning' })
+        this.$confirm('此操作将删除课件 ' + row.title + ', 是否继续?', '提示', { type: 'warning' })
           .then(() => {
-            api.reqDeleteFile(row._id).then(() =>{
+            api.reqDeleteLesson(row._id).then(() =>{
               this.$message.success('删除成功！');
               this.getFile();
             }).catch(() => {

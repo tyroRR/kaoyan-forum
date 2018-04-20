@@ -26,7 +26,8 @@
                     <el-table
                       :data="files"
                       border
-                      style="width: 100%">
+                      style="width: 100%"
+                      @cell-click="downZT">
                       <el-table-column
                         fixed
                         prop="type"
@@ -38,7 +39,7 @@
                         label="2018"
                         align="center">
                         <template slot-scope="scope">
-                          <el-button @click="downZT(scope.index,scope.row)" type="text" size="small">{{scope.row.y2018}}</el-button>
+                          <el-button @cell-click="downZT(scope.row, scope.column, scope.cell, scope.event)" type="text" size="small">{{scope.row.y2018}}</el-button>
                         </template>
                       </el-table-column>
                       <el-table-column
@@ -46,7 +47,7 @@
                         label="2017"
                         align="center">
                         <template slot-scope="scope">
-                          <el-button @click="downZT(scope.index,scope.row)" type="text" size="small">{{scope.row.y2017}}</el-button>
+                          <el-button @cell-click="downZT(scope.row, scope.column, scope.cell, scope.event)" type="text" size="small">{{scope.row.y2017}}</el-button>
                         </template>
                       </el-table-column>
                       <el-table-column
@@ -54,7 +55,7 @@
                         label="2016"
                         align="center">
                         <template slot-scope="scope">
-                          <el-button @click="downZT(scope.$index,scope.row)" type="text" size="small">{{scope.row.y2016}}</el-button>
+                          <el-button @cell-click="downZT(scope.row, scope.column, scope.cell, scope.event)" type="text" size="small">{{scope.row.y2016}}</el-button>
                         </template>
                       </el-table-column>
                       <el-table-column
@@ -62,7 +63,7 @@
                         label="2015"
                         align="center">
                         <template slot-scope="scope">
-                          <el-button @click="downZT(scope.$index,scope.row)" type="text" size="small">{{scope.row.y2015}}</el-button>
+                          <el-button @cell-click="downZT(scope.row, scope.column, scope.cell, scope.event)" type="text" size="small">{{scope.row.y2015}}</el-button>
                         </template>
                       </el-table-column>
                     </el-table>
@@ -207,11 +208,6 @@
         this.nav = val;
         this.getFile();
       },
-      pageSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-        this.filter.pageSize = val;
-        this.getFile();
-      },
       pageCurrentChange(val) {
         console.log(`当前页: ${val}`);
         this.filter.currentPage = val;
@@ -220,13 +216,117 @@
       handleSelect (val) {
         this.value = val
       },
-      downZT(index,row) {
-        console.log(index);
-
+      downZT(row, column) {
+        console.log(row, column);
+        if(row.type === '政治'){
+          if(column.label === '2015'){
+            this.handleDownload("5ada25b4ae58b031d4f11c9c")
+          }
+          if(column.label === '2016'){
+            this.handleDownload("5ada25b4ae58b031d4f11c9d")
+          }
+          if(column.label === '2017'){
+            this.handleDownload("5ada25b4ae58b031d4f11c9e")
+          }
+          if(column.label === '2018'){
+            this.handleDownload("5ada25b4ae58b031d4f11c9f")
+          }
+        }
+        if(row.type === '英语一'){
+          if(column.label === '2015'){
+            this.handleDownload("5ada24d7ae58b031d4f11c82")
+          }
+          if(column.label === '2016'){
+            this.handleDownload("5ada24d7ae58b031d4f11c85")
+          }
+          if(column.label === '2017'){
+            this.handleDownload("5ada24d7ae58b031d4f11c8a")
+          }
+          if(column.label === '2018'){
+            this.handleDownload("5ada24f9ae58b031d4f11c8c")
+          }
+        }
+        if(row.type === '英语二'){
+          if(column.label === '2015'){
+            this.handleDownload("5ada24d7ae58b031d4f11c81")
+          }
+          if(column.label === '2016'){
+            this.handleDownload("5ada24d7ae58b031d4f11c83")
+          }
+          if(column.label === '2017'){
+            this.handleDownload("5ada24d7ae58b031d4f11c89")
+          }
+          if(column.label === '2018'){
+            this.handleDownload("5ada24f9ae58b031d4f11c8b")
+          }
+        }
+        if(row.type === '数学一'){
+          if(column.label === '2015'){
+            this.handleDownload("5ada2580ae58b031d4f11c90")
+          }
+          if(column.label === '2016'){
+            this.handleDownload("5ada2580ae58b031d4f11c93")
+          }
+          if(column.label === '2017'){
+            this.handleDownload("5ada259aae58b031d4f11c97")
+          }
+          if(column.label === '2018'){
+            this.handleDownload("5ada259aae58b031d4f11c9b")
+          }
+        }
+        if(row.type === '数学二'){
+          if(column.label === '2015'){
+            this.handleDownload("5ada257fae58b031d4f11c8d")
+          }
+          if(column.label === '2016'){
+            this.handleDownload("5ada2580ae58b031d4f11c91")
+          }
+          if(column.label === '2017'){
+            this.handleDownload("5ada2580ae58b031d4f11c96")
+          }
+          if(column.label === '2018'){
+            this.handleDownload("5ada259aae58b031d4f11c99")
+          }
+        }
+        if(row.type === '数学三'){
+          if(column.label === '2015'){
+            this.handleDownload("5ada2580ae58b031d4f11c8f")
+          }
+          if(column.label === '2016'){
+            this.handleDownload("5ada2580ae58b031d4f11c95")
+          }
+          if(column.label === '2017'){
+            this.handleDownload("5ada259aae58b031d4f11c98")
+          }
+          if(column.label === '2018'){
+            this.handleDownload("5ada259aae58b031d4f11c9a")
+          }
+        }
+        if(row.type === '计算机'){
+          if(column.label === '2015'){
+            this.handleDownload('5ada2446ae58b031d4f11c7f')
+          }
+          if(column.label === '2016'){
+            this.handleDownload('5ada2446ae58b031d4f11c80')
+          }
+          if(column.label === '2017'){
+            this.handleDownload('5ada2446ae58b031d4f11c7e')
+          }
+          if(column.label === '2018'){
+            this.handleDownload('5ada2446ae58b031d4f11c7d')
+          }
+        }
       },
       handleDownload (val) {
         console.log(val);
-        const fid = val.$attrs.fileId;
+        console.log(typeof val);
+        let fid;
+        if(typeof val === 'string'){
+          fid = val
+        }
+        else{
+          fid = val.$attrs.fileId;
+        }
         if(sessionStorage.getItem('isLogin')){
           const uid = JSON.parse(sessionStorage.getItem('userInfo')).id;
           api.reqDownload(uid,fid);

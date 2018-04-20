@@ -53,12 +53,11 @@
           </el-col>
         </el-row>
         <el-col :span="24">
-          <div class="gridlist-demo-container" style="margin-bottom: 20px">
+          <div class="gridlist-demo-container" style="margin-bottom: 50px">
             <mu-grid-list class="gridlist-demo">
-              <mu-grid-tile v-for="(item,index) in list" :key="index" titlePosition="top" actionPosition="left" :rows="item.featured ? 2 : 1" :cols="item.featured ? 2 : 1">
-                <img :src="item.image"/>
-                <span slot="title">{{item.title}}</span>
-                <span slot="subTitle">by <b>{{item.author}}</b></span>
+              <mu-grid-tile style="width:auto!important; height: auto" :key="index" titlePosition="top" actionPosition="left">
+                <img src="../../assets/img/pic1.jpg" width="100%"/>
+                <span slot="title">要想飞得高，就该把地平线忘掉</span>
                 <mu-icon-button icon="star_border" slot="action"/>
               </mu-grid-tile>
             </mu-grid-list>
@@ -91,20 +90,6 @@
 
     data () {
       return {
-        list: [{
-          image: '../../assets/img/p1.jpg',
-          title: 'Breakfast',
-          author: 'Myron',
-          featured: true
-        }, {
-          image: '../../assets/img/p2.jpg',
-          title: 'Burger',
-          author: 'Linyu'
-        }, {
-          image: '../../assets/img/p3.jpg',
-          title: 'Camera',
-          author: 'ruolin'
-        }],
         infoList:[],
       }
     },
