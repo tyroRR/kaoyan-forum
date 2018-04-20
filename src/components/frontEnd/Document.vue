@@ -69,13 +69,23 @@
                   </template>
                 <template v-else>
                   <mu-list-item v-for="(item,index) in fileList" :key="index" :title="item.fileName" :fileId="item._id" :value="index" >
-                    <mu-avatar icon="assignment" backgroundColor="blue" slot="leftAvatar" />
+                    <mu-avatar icon="folder" slot="leftAvatar" />
                     <mu-icon value="file_download" slot="right"/>
                     <span slot="describe">
         <span style="color: rgba(0, 0, 0, .87)">{{item.createTime + ' -'}}</span>下载次数{{' '+item.count}}</span>
                   </mu-list-item>
-                  <mu-pagination :total="total" :showSizeChanger="showSizeChanger" :pageSizeOption="pageSizeOption" @pageSizeChange="handleClick">
-                  </mu-pagination>
+
+                    <el-pagination class="paging"
+                                   :current-page="filter.currentPage"
+                                   :page-sizes="[10, 20, 50, 100]"
+                                   :page-size="filter.pageSize"
+                                   layout="total, sizes, prev, pager, next, jumper"
+                                   :total="totalRows"
+                                   @size-change="pageSizeChange"
+                                   @current-change="pageCurrentChange">
+                    </el-pagination>
+
+
                 </template>
               </mu-list>
             </div>
@@ -87,8 +97,8 @@
           <mu-paper>
             <mu-card-header title="热门下载Top10"/>
             <mu-divider />
-            <mu-list-item v-for="item in top_10_files" :key="index" :title="item.fileName">
-              <mu-badge :content="item.count" circle secondary slot="after"/>
+            <mu-list-item v-for="(item,index) in top_10_files" :key="index" :title="item.fileName">
+              <mu-badge :content="item.count.toString()" circle secondary slot="after"/>
             </mu-list-item>
           </mu-paper>
         </div>
@@ -158,19 +168,27 @@
         nav: '历史真题',
         toast: false,
         regMsg: '',
-        total: 130,
-        current: 1,
-        showSizeChanger: true,
-        pageSizeOption: [10, 20, 30, 40]
+        filter: {
+          pageSize: 10,
+          currentPage: 1,
+          beginIndex: 0,
+        },
+        totalRows: 0,
       }
     },
     mounted: function () {
-      api.reqGetDocList().then(res=>{
-        this.fileList = res.data;
-        this.top_10_files = res.data.slice(0,9);
-      })
+      this.getFile();
     },
     methods: {
+      getFile(){
+        api.reqGetDocList().then(res=>{
+          let fileList = res.data;
+          this.totalRows = res.data.length;
+          fileList.beginIndex = (this.filter.currentPage-1)*this.filter.pageSize;
+          this.fileList = fileList.splice(this.filter.beginIndex,this.filter.pageSize);
+          this.top_10_files = res.data.slice(0,9);
+        })
+      },
       hideToast () {
         this.toast = false;
         if (this.toastTimer) clearTimeout(this.toastTimer)
@@ -178,8 +196,15 @@
       handleChange (val) {
         this.nav = val
       },
-      handleClick (){
-
+      pageSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+        this.filter.pageSize = val;
+        this.getFile();
+      },
+      pageCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+        this.filter.currentPage = val;
+        this.getFile();
       },
       handleSelect (val) {
         this.value = val
@@ -226,6 +251,17 @@
 
   .bm {
     margin-bottom: 16px;
+  }
+
+  .paging{
+    min-height: 48px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    padding: 16px;
+    color: rgba(0,0,0,.87);
+    position: relative;
   }
 
 </style>

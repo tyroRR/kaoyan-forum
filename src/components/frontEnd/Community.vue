@@ -5,9 +5,8 @@
         <mu-col width="100" tablet="100" desktop="100">
           <mu-paper>
             <mu-bottom-nav :value="nav" @change="handleChange">
-              <mu-bottom-nav-item value="考研资讯区" title="考研资讯区" icon="assignment"/>
-              <mu-bottom-nav-item value="学习讨论区" title="学习讨论区" icon="star_border"/>
-              <mu-bottom-nav-item value="经验互动区" title="经验互动区" icon="restore"/>
+              <mu-bottom-nav-item value="学习讨论区" title="学习讨论区" icon="assignment"/>
+              <mu-bottom-nav-item value="经验互动区" title="经验互动区" icon="star_border"/>
               <mu-bottom-nav-item value="名校交流区" title="名校交流区" icon="autorenew"/>
             </mu-bottom-nav>
           </mu-paper>
@@ -35,8 +34,12 @@
                   </div>
                 </mu-list>
               </div>
-              <mu-pagination :total="total" :showSizeChanger="showSizeChanger" :pageSizeOption="pageSizeOption" @pageSizeChange="handleClick">
-              </mu-pagination>
+              <el-pagination class="paging"
+                             :current-page="filter.currentPage"
+                             layout="total, prev, pager, next, jumper"
+                             :total="totalRows"
+                             @current-change="pageCurrentChange">
+              </el-pagination>
             </mu-card-text>
           </mu-card>
         </mu-col>
@@ -104,6 +107,11 @@
       </mu-row>
       <div class="post-topic">
         <mu-dialog :open="postTopicDialog" title="发布新话题" @close="closePostTopic">
+          <mu-select-field v-model="topic.type" label="选择分类">
+            <mu-menu-item value="study" title="学习讨论区"/>
+            <mu-menu-item value="experience" title="经验互动区"/>
+            <mu-menu-item value="school" title="名校交流区"/>
+          </mu-select-field><br>
           <mu-text-field label="标题" v-model="topic.title" :errorText="errorText.title" labelFloat/><br/>
           <mu-text-field hintText="请输入..." v-model="topic.content" multiLine :errorText="errorText.content" :rows="10" :rowsMax="30" fullWidth/><br/>
           <mu-flat-button slot="actions" @click="closePostTopic" primary label="取消"/>
@@ -125,13 +133,14 @@
             content: ''
           },
           postTopicDialog: false,
-          nav: '考研资讯区',
+          nav: '学习讨论区',
           toast: false,
           regMsg: '',
-          total: 130,
-          current: 1,
-          showSizeChanger: true,
-          pageSizeOption: [10, 20, 30, 40]
+          filter: {
+            currentPage: 1,
+            beginIndex: 0,
+          },
+          totalRows: 0,
         }
       },
       mounted: function () {
@@ -144,25 +153,29 @@
         },
         getTopic() {
           let type;
-          if(this.nav === '考研资讯区'){
-            type = 'info'
-          }
           if(this.nav === '学习讨论区'){
-            type = 'dis'
+            type = new RegExp('study')
           }
           if(this.nav === '经验互动区'){
-            type = 'experience'
+            type = new RegExp('experience')
           }
           if(this.nav === '名校交流区'){
-            type = 'elite'
+            type = new RegExp('school')
           }
           api.reqGetTopicList().then(res=>{
-            this.topicList = res.data.filter(v=>v.type === type);
-            console.log(this.topicList);
+            let topicList = res.data.filter(v=>v.type.match(type));
+            this.totalRows = topicList.length;
+            this.filter.beginIndex = (this.filter.currentPage-1)*10;
+            this.topicList = topicList.splice(this.filter.beginIndex,10);
           })
         },
         handleChange (val) {
           this.nav = val;
+          this.getTopic();
+        },
+        pageCurrentChange(val) {
+          console.log(`当前页: ${val}`);
+          this.filter.currentPage = val;
           this.getTopic();
         },
         handleClick (){
@@ -194,7 +207,7 @@
               this.topic = {};
               api.reqGetTopicList().then(res=>{
                 let type = this.topicType;
-                this.topicList = res.data.filter(v=>v.role === type);
+                this.topicList = res.data.filter(v=>v.type === type);
               });
               this.toast = true;
               if (this.toastTimer) clearTimeout(this.toastTimer);
@@ -234,4 +247,16 @@
 .bm{
   margin-bottom: 16px;
 }
+
+.paging{
+  min-height: 48px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  padding: 16px;
+  color: rgba(0,0,0,.87);
+  position: relative;
+}
+
 </style>

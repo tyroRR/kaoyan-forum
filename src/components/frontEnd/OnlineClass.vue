@@ -16,8 +16,15 @@
         </mu-grid-tile>
       </mu-grid-list>
     </div>
-    <mu-pagination :total="total" :showSizeChanger="showSizeChanger" :pageSizeOption="pageSizeOption" @pageSizeChange="handleClick">
-    </mu-pagination>
+    <el-pagination class="paging"
+                   :current-page="filter.currentPage"
+                   :page-sizes="[10, 20, 50, 100]"
+                   :page-size="filter.pageSize"
+                   layout="total, sizes, prev, pager, next, jumper"
+                   :total="totalRows"
+                   @size-change="pageSizeChange"
+                   @current-change="pageCurrentChange">
+    </el-pagination>
   </div>
 </template>
 
@@ -27,10 +34,12 @@
   export default {
     data () {
       return {
-        total: 130,
-        current: 1,
-        showSizeChanger: true,
-        pageSizeOption: [10, 20, 30, 40],
+        filter: {
+          pageSize: 10,
+          currentPage: 1,
+          beginIndex: 0,
+        },
+        totalRows: 0,
         lessonList: []
       }
     },
@@ -40,9 +49,16 @@
       })
     },
     methods: {
-      handleClick (newIndex) {
-        console.log('page size change event', newIndex)
-      }
+      pageSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+        this.filter.pageSize = val;
+        this.getFile();
+      },
+      pageCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+        this.filter.currentPage = val;
+        this.getFile();
+      },
     }
   }
 </script>

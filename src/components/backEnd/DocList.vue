@@ -150,7 +150,6 @@
           pageSize: 10,
           currentPage: 1,
           beginIndex: 0,
-          username: '',
         },
         totalRows: 0,
         keywords: '', //搜索框的关键字内容

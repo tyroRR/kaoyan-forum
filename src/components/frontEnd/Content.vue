@@ -18,6 +18,23 @@
             <p>{{content.content}}</p>
           </mu-row>
         </mu-paper>
+        <mu-paper v-if="content.reply" style="margin-top: 20px">
+          <div class="reply-header">
+            <span>{{content.reply.length}} 回复</span>
+          </div>
+          <div class="reply-list">
+            <mu-list>
+              <div class="item-wrapper" v-for="item in content.reply"  >
+                <mu-list-item :title="item.username">
+                  <mu-avatar src="/images/avatar3.jpg" slot="leftAvatar"/>
+                    <span slot="describe">
+                    <span style="color: rgba(0, 0, 0, .87)">{{item.username + ' -'}}</span>{{' '+item.content}}</span>
+                </mu-list-item>
+                <mu-divider/>
+              </div>
+            </mu-list>
+          </div>
+        </mu-paper>
       </mu-col>
       <mu-col width="0" tablet="25" desktop="25" class="sidebar">
         <div class="tips bm">
@@ -114,5 +131,13 @@
   .bm {
     margin-bottom: 16px;
   }
+
+  .reply-header {
+    padding: 18px;
+    background-color: #f6f6f6;
+    border-radius: 3px 3px 0 0;
+  }
+
+  
 
 </style>
