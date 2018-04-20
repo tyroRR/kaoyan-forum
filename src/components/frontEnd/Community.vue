@@ -163,7 +163,7 @@
             type = new RegExp('school')
           }
           api.reqGetTopicList().then(res=>{
-            let topicList = res.data.filter(v=>v.type.match(type));
+            let topicList = res.data.filter(v=>v.type.match(type)).reverse();
             this.totalRows = topicList.length;
             this.filter.beginIndex = (this.filter.currentPage-1)*10;
             this.topicList = topicList.splice(this.filter.beginIndex,10);
@@ -198,6 +198,7 @@
             let params = {
               title: this.topic.title,
               content: this.topic.content,
+              type: this.topic.type,
               sponsor: userInfo.username,
               avatar: userInfo.avatar
             };
@@ -205,10 +206,7 @@
               this.postTopicDialog = false;
               this.regMsg = '发布成功！';
               this.topic = {};
-              api.reqGetTopicList().then(res=>{
-                let type = this.topicType;
-                this.topicList = res.data.filter(v=>v.type === type);
-              });
+              this.getTopic();
               this.toast = true;
               if (this.toastTimer) clearTimeout(this.toastTimer);
               this.toastTimer = setTimeout(() => { this.toast = false }, 2000);
@@ -222,6 +220,7 @@
         },
         showDetail(item){
           sessionStorage.setItem('content',JSON.stringify(item));
+          console.log(JSON.parse(sessionStorage.getItem('content')));
           this.$router.push({ path: `Content/${item._id}` });
         }
       }

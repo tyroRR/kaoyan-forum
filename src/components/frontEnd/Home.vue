@@ -28,7 +28,7 @@
             <mu-card>
               <mu-card-text>
                 <h3>考研资料</h3>
-                <p>考研资料哪里找？历年真题，考研笔记，专业课讲义......海量资料，免费下载</p>
+                <p>考研资料哪找？历年真题，考研笔记，海量资料，免费下载</p>
                 <a class="link" style="cursor:pointer" @click="$router.push({ path: '/Document' })" >Read More</a>
               </mu-card-text>
             </mu-card>
@@ -52,22 +52,19 @@
             </mu-card>
           </el-col>
         </el-row>
-        <div class="row pic-wall">
-          <el-col :span="12" class="pic-wrapper">
-            <img src="" alt="">
-            <p>pic1</p>
-          </el-col>
-          <el-col :span="12" class="pic-wrapper">
-            <div class="wrap-inner">
-              <img src="" alt="">
-              <p>pic2</p>
-            </div>
-            <div class="wrap-inner">
-              <img src="" alt="">
-              <p>pic3</p>
-            </div>
-          </el-col>
-        </div>
+        <el-col :span="24">
+          <div class="gridlist-demo-container" style="margin-bottom: 20px">
+            <mu-grid-list class="gridlist-demo">
+              <mu-grid-tile v-for="(item,index) in list" :key="index" titlePosition="top" actionPosition="left" :rows="item.featured ? 2 : 1" :cols="item.featured ? 2 : 1">
+                <img :src="item.image"/>
+                <span slot="title">{{item.title}}</span>
+                <span slot="subTitle">by <b>{{item.author}}</b></span>
+                <mu-icon-button icon="star_border" slot="action"/>
+              </mu-grid-tile>
+            </mu-grid-list>
+          </div>
+        </el-col>
+
         <el-col :span="24">
           <div class="info-pub">
             <div class="info-list">
@@ -85,7 +82,6 @@
           </div>
         </el-col>
 
-
       </el-main>
     </div>
 </template>
@@ -95,6 +91,20 @@
 
     data () {
       return {
+        list: [{
+          image: '../../assets/img/p1.jpg',
+          title: 'Breakfast',
+          author: 'Myron',
+          featured: true
+        }, {
+          image: '../../assets/img/p2.jpg',
+          title: 'Burger',
+          author: 'Linyu'
+        }, {
+          image: '../../assets/img/p3.jpg',
+          title: 'Camera',
+          author: 'ruolin'
+        }],
         infoList:[],
       }
     },
@@ -125,13 +135,20 @@
     margin: 0;
   }
 
-  .text-group,.pic-wall{
+  .text-group {
     padding: 50px 0;
   }
 
-  .pic-wall{
-    background-color: #EDF2FC;
-    margin: 20px auto;
+  .gridlist-demo-container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+
+  .gridlist-demo{
+    width: 100%;
+    height: 450px;
+
   }
 
   .info-pub{

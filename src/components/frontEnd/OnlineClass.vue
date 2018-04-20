@@ -18,11 +18,8 @@
     </div>
     <el-pagination class="paging"
                    :current-page="filter.currentPage"
-                   :page-sizes="[10, 20, 50, 100]"
-                   :page-size="filter.pageSize"
-                   layout="total, sizes, prev, pager, next, jumper"
+                   layout="total, prev, pager, next, jumper"
                    :total="totalRows"
-                   @size-change="pageSizeChange"
                    @current-change="pageCurrentChange">
     </el-pagination>
   </div>
@@ -35,7 +32,6 @@
     data () {
       return {
         filter: {
-          pageSize: 10,
           currentPage: 1,
           beginIndex: 0,
         },
@@ -49,11 +45,6 @@
       })
     },
     methods: {
-      pageSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-        this.filter.pageSize = val;
-        this.getFile();
-      },
       pageCurrentChange(val) {
         console.log(`当前页: ${val}`);
         this.filter.currentPage = val;

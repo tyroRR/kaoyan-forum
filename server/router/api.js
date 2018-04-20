@@ -355,7 +355,7 @@ router.post(`/admin/uploadFiles`,upload.array('files', 10),(req,res) =>{
 
   fileList.map(t=>{
     t.fileName = (t.originalname).split('.')[0];
-    t.url = `${t.destination}/${type}/${t.originalname}`;
+    t.url = `${t.destination}/${t.originalname}`;
     t.count = 0;
     t.type = type;
     t.createTime = createTime;
@@ -383,7 +383,6 @@ router.patch(`/admin/updateFile/:id`,(req,res) =>{
   const createTime = new Date().toLocaleString();
 
   Document.findByIdAndUpdate(id, {
-    id: fileName,
     fileName: fileName,
     url: url,
     count: count,
@@ -471,13 +470,40 @@ router.post(`/user/:uid/postTopic`,(req,res) =>{
     content : req.body.content,
     sponsor : req.body.sponsor,
     avatar : req.body.avatar,
-    type : 'recent',
+    type : req.body.type,
     createTime : createTime
   });
   topic.save();
   resData.code = 1;
   resData.message = 'success';
   res.json(resData)
+});
+
+router.patch(`/user/reply/:id`,(req,res) =>{
+  const id = req.params.id;
+  const replyUsername = req.body.username;
+  const replyContent = req.body.content;
+  const createTime = new Date().toLocaleString();
+  const reply = {
+    username: replyUsername,
+    content: replyContent,
+    createTime: createTime,
+  };
+
+  Topic.findByIdAndUpdate(id, {
+    $push : {
+      reply: reply
+    }
+  }).then(()=>{
+      resData.code = 0;
+      resData.message = 'success';
+      res.send(resData)
+    }
+  ).catch(()=>{
+    resData.code = 1;
+    resData.message = 'failed';
+    res.send(resData)
+  })
 });
 
 router.get(`/user/:uid/file/:fid`,(req,res) =>{

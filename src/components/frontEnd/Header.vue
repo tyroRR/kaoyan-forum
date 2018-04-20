@@ -1,6 +1,6 @@
 <template>
   <div class="header">
-    <template v-if="$route.path === '/Dashboard'||$route.path === '/Dashboard/userList'||$route.path === '/Dashboard/infoList'||$route.path === '/Dashboard/topicList'||$route.path === '/Dashboard/docList'"></template>
+    <template v-if="$route.path === '/Dashboard'||$route.path === '/Dashboard/userList'||$route.path === '/Dashboard/infoList'||$route.path === '/Dashboard/topicList'||$route.path === '/Dashboard/docList'||$route.path === '/Dashboard/LessonList'"></template>
     <template v-else>
       <mu-toast v-if="toast" :message="regMsg" @close="hideToast"/>
       <mu-appbar title="考研网站" class="wrapper">

@@ -25,7 +25,7 @@
           <div class="reply-list">
             <mu-list>
               <div class="item-wrapper" v-for="item in content.reply"  >
-                <mu-list-item :title="item.username">
+                <mu-list-item>
                   <mu-avatar src="/images/avatar3.jpg" slot="leftAvatar"/>
                     <span slot="describe">
                     <span style="color: rgba(0, 0, 0, .87)">{{item.username + ' -'}}</span>{{' '+item.content}}</span>
@@ -35,14 +35,22 @@
             </mu-list>
           </div>
         </mu-paper>
+        <mu-paper v-if="content.reply" style="margin-top: 20px">
+          <div class="my-reply">
+            <mu-text-field v-model="replyText" hintText="请输入..." multiLine :rows="3" :rowsMax="8" icon="comment" :underlineShow="false" style="border: black; width:90%"/><br/>
+            <mu-divider/>
+            <mu-raised-button label="回复" class="demo-raised-button" primary style="margin-left: 82%; margin-top: 2%" @click="onReply"/>
+          </div>
+        </mu-paper>
       </mu-col>
       <mu-col width="0" tablet="25" desktop="25" class="sidebar">
         <div class="tips bm">
           <mu-paper>
-
             <mu-card-header title="点赞次数"/>
             <mu-divider />
-
+            <mu-list-item>
+              <mu-checkbox label="favorite" class="demo-checkbox" uncheckIcon="favorite_border" checkedIcon="favorite"/> <br/>
+            </mu-list-item>
           </mu-paper>
         </div>
       </mu-col>
@@ -66,12 +74,9 @@
           title: '',
           content: ''
         },
+        replyText: '',
         toast: false,
         regMsg: '',
-        total: 130,
-        current: 1,
-        showSizeChanger: true,
-        pageSizeOption: [10, 20, 30, 40]
       }
     },
     mounted: function () {
@@ -84,6 +89,27 @@
       },
       handleChange (val) {
         this.nav = val
+      },
+      onReply() {
+        let id = this.content._id;
+        const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
+        let username = userInfo.username;
+        let content = this.replyText;
+        let param = {
+          username: username,
+          content: content
+        };
+        api.reqPostReply(id,param).then(() =>{
+          this.replyText = '';
+          this.regMsg = '回复成功！';
+          this.toast = true;
+          if (this.toastTimer) clearTimeout(this.toastTimer);
+          this.toastTimer = setTimeout(() => { this.toast = false }, 2000);
+        }).catch(() =>{
+          this.regMsg = '发布成功！';
+          this.toast = true;
+          if (this.toastTimer) clearTimeout(this.toastTimer);
+          this.toastTimer = setTimeout(() => { this.toast = false }, 2000);})
       },
       handleClick (){
 
@@ -133,11 +159,20 @@
   }
 
   .reply-header {
-    padding: 18px;
+    padding: 16px;
     background-color: #f6f6f6;
     border-radius: 3px 3px 0 0;
   }
 
-  
+  .my-reply{
+    padding: 16px;
+    background-color: #f6f6f6;
+    border-radius: 3px 3px 0 0;
+  }
+
+  .demo-divider-form {
+    margin-bottom: 0;
+    margin-left: 20px;
+  }
 
 </style>

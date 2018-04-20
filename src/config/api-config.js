@@ -15,6 +15,7 @@ const api = {
   reqDeleteInfo: id => axios.delete(`/admin/deleteInfo/${id}`),
   reqGetTopicList: type => axios.get(`/getTopicList`, type),
   reqPostTopic: params => axios.post(`/admin/postTopic`, params),
+  reqPostReply: (id,params) => axios.patch(`/user/reply/${id}`, params),
   //reqPostTopicList: params => axios.post(`/admin/postTopicList`, params),
   reqUpdateTopic: (id, params) => axios.patch(`/admin/updateTopic/${id}`, params),
   reqDeleteTopic: id => axios.delete(`/admin/deleteTopic/${id}`),

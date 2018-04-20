@@ -75,17 +75,12 @@
         <span style="color: rgba(0, 0, 0, .87)">{{item.createTime + ' -'}}</span>下载次数{{' '+item.count}}</span>
                   </mu-list-item>
 
-                    <el-pagination class="paging"
-                                   :current-page="filter.currentPage"
-                                   :page-sizes="[10, 20, 50, 100]"
-                                   :page-size="filter.pageSize"
-                                   layout="total, sizes, prev, pager, next, jumper"
-                                   :total="totalRows"
-                                   @size-change="pageSizeChange"
-                                   @current-change="pageCurrentChange">
-                    </el-pagination>
-
-
+                  <el-pagination class="paging"
+                                 :current-page="filter.currentPage"
+                                 layout="total, prev, pager, next, jumper"
+                                 :total="totalRows"
+                                 @current-change="pageCurrentChange">
+                  </el-pagination>
                 </template>
               </mu-list>
             </div>
@@ -169,7 +164,6 @@
         toast: false,
         regMsg: '',
         filter: {
-          pageSize: 10,
           currentPage: 1,
           beginIndex: 0,
         },
@@ -181,11 +175,27 @@
     },
     methods: {
       getFile(){
+        let type;
+        if(this.nav === '历史真题'){
+          type = new RegExp('zt')
+        }
+        if(this.nav === '数学'){
+          type = new RegExp('math')
+        }
+        if(this.nav === '英语'){
+          type = new RegExp('english')
+        }
+        if(this.nav === '政治'){
+          type = new RegExp('politics')
+        }
+        if(this.nav === '计算机'){
+          type = new RegExp('computer')
+        }
         api.reqGetDocList().then(res=>{
-          let fileList = res.data;
-          this.totalRows = res.data.length;
-          fileList.beginIndex = (this.filter.currentPage-1)*this.filter.pageSize;
-          this.fileList = fileList.splice(this.filter.beginIndex,this.filter.pageSize);
+          let fileList = res.data.filter(v=>v.type.match(type)).reverse();
+          this.totalRows = fileList.length;
+          this.filter.beginIndex = (this.filter.currentPage-1)*10;
+          this.fileList = fileList.splice(this.filter.beginIndex,10);
           this.top_10_files = res.data.slice(0,9);
         })
       },
@@ -194,7 +204,8 @@
         if (this.toastTimer) clearTimeout(this.toastTimer)
       },
       handleChange (val) {
-        this.nav = val
+        this.nav = val;
+        this.getFile();
       },
       pageSizeChange(val) {
         console.log(`每页 ${val} 条`);
